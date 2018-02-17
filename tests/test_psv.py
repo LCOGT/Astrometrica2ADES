@@ -88,3 +88,32 @@ class Test_ParseHeader():
         header = parse_header(header_line)
 
         assert expected_header == header
+
+    def test_TEL_header(self):
+        expected_header = ("# version=2017" + "\n"
+                           "# telescope" + "\n"
+                           "! aperture 1.5" + "\n"
+                           "! design reflector" + "\n"
+                           "! detector CCD" + "\n"
+                           )
+
+        header_line = "TEL 1.5-m reflector + CCD"
+
+        header = parse_header(header_line)
+
+        assert expected_header == header
+
+    def test_TEL_header_fRatio(self):
+        expected_header = ("# version=2017" + "\n"
+                           "# telescope" + "\n"
+                           "! aperture 1.5" + "\n"
+                           "! design reflector" + "\n"
+                           "! detector CCD" + "\n"
+                           "! fRatio f/6" + "\n"
+                           )
+
+        header_line = "TEL 1.5-m f/6 reflector + CCD"
+
+        header = parse_header(header_line)
+
+        assert expected_header == header
