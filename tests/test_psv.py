@@ -58,3 +58,33 @@ class Test_ParseHeader():
         header = parse_header(header_line)
 
         assert expected_header == header
+
+    def test_MEA_header(self):
+
+        expected_header = ("# version=2017" + "\n"
+                           "# measurers" + "\n"
+                           "! name R. L. Seaman" + "\n"
+                           )
+
+        header_line = "MEA R. L. Seaman"
+
+        header = parse_header(header_line)
+
+        assert expected_header == header
+
+    def test_MEA_header_multi_observers(self):
+
+        expected_header = ("# version=2017" + "\n"
+                           "# measurers" + "\n"
+                           "! name R. L. Seaman" + "\n"
+                           "! name E. J. Christensen" + "\n"
+                           "! name D. C. Fuls" + "\n"
+                           "! name A. R. Gibbs" + "\n"
+
+                           )
+
+        header_line = "MEA R. L. Seaman, E. J. Christensen, D. C. Fuls, A. R. Gibbs"
+
+        header = parse_header(header_line)
+
+        assert expected_header == header

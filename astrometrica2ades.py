@@ -9,7 +9,7 @@ except ImportError:
 def parse_header(header_lines):
 
     version_string = "# version=2017"
-    observatory = observers = ''
+    observatory = observers = measurers = ''
 
     if type(header_lines) != list:
         header_lines = [header_lines,]
@@ -18,11 +18,15 @@ def parse_header(header_lines):
             observatory = parse_obscode(line[4:])
         elif line[0:3] == 'OBS':
             observers = parse_observers(line[4:])
+        elif line[0:3] == 'MEA':
+            measurers = parse_measurers(line[4:])
     header = version_string + '\n'
     if observatory != '':
         header += observatory
     if observers != '':
         header += observers
+    if measurers != '':
+        header += measurers
     return header
 
 def parse_obscode(code_line):
@@ -51,3 +55,14 @@ def parse_observers(code_line):
         for observer in obs:
             observers += "! name " + observer.strip() + "\n"
     return observers
+
+def parse_measurers(code_line):
+
+    measurers = ''
+
+    meas = code_line.split(',')
+    if len(meas) >= 1:
+        measurers = '# measurers\n'
+        for measurer in meas:
+            measurers += "! name " + measurer.strip() + "\n"
+    return measurers
