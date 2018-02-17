@@ -21,7 +21,7 @@ def parse_header(header_lines):
         elif line[0:3] == 'MEA':
             measurers = parse_measurers(line[4:])
         elif line[0:3] == 'TEL':
-            measurers = parse_telescope(line[4:])
+            telescope = parse_telescope(line[4:])
     header = version_string + '\n'
     if observatory != '':
         header += observatory
@@ -29,6 +29,8 @@ def parse_header(header_lines):
         header += observers
     if measurers != '':
         header += measurers
+    if telescope != '':
+        header += telescope
     return header
 
 def parse_obscode(code_line):
