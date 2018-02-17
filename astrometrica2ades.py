@@ -23,9 +23,13 @@ def parse_obscode(code_line):
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    site_name = config.get('OBSERVATORY', 'SITE_NAME')
+    site_code = code_line.strip()
+    try:
+        site_name = config.get('OBSERVATORY', site_code + '_SITE_NAME')
+    except configparser.NoOptionError:
+        site_name = None
     observatory = ( "# observatory" + "\n"
-                    "! mpcCode " + code_line.strip() + "\n")
+                    "! mpcCode " + site_code + "\n")
     if site_name:
         observatory += "! name " + site_name +"\n"
 
