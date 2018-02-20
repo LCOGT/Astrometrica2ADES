@@ -152,40 +152,6 @@ def checkSexagesimal(line):
    errorSexVal('sexagesimal date must be "HH MM SS.ss" not ', line)
 
 _checkDate = re.compile('^((16|17|18|19|[2-9]\d)\d\d) (0[1-9]|10|11|12) ((0[1-9]|[12]\d|30|31)\.(\d+)) *$')
-#testdate("1800 00 01.333  ")  # bad month
-#testdate("1800 01 00.333  ")  # bad day
-#testdate("1800 01 01    ")
-#testdate("1800 01 01.   ")
-#testdate("1800 01 01.3  ")
-#testdate("1800 01 01.33  ")
-#testdate("1800 01 01.333  ")
-#testdate("1800 01 01.3333  ")
-#testdate("1800 01 01.33333  ")
-#testdate("1800 01 01.333333  ")
-#testdate("1800 01 01.3333333 ")
-#testdate("1800 01 01.3333333")
-#testdate("1920 01 01.3333333")
-#testdate("1920 09 01.3333333")
-#testdate("1920 10 01.3333333")
-#testdate("1920 1030 01.3333333") # bad month
-#testdate("1920 102 01.3333333") # bad month
-#testdate("1920 11 01.3333333")
-#testdate("1920 12 01.3333333")
-#testdate("1920 13 01.3333333") # bad month
-#testdate("2001 01 01.3333333")
-#testdate("2001 01 11.3333333")
-#testdate("2001 01 21.3333333")
-#testdate("2001 01 28.3333333")
-#testdate("2001 01 31.3333333")
-#testdate("2001 01 30.3333333")
-#testdate("2901 01 01.3333333")
-#testdate("2101 01 01.3333333")
-#testdate("2101 02 01.3333333")
-#testdate("2101 03 01.3333333")
-#testdate("2101 03 31.3333333")
-#testdate("2101 03 21.3333333")
-#testdate("2101 03 32.3333333") #bad day
-
 
 _countDate1 = 0
 _countDate10 = 0
@@ -228,11 +194,17 @@ def sexDateToISO(sexDate):
    m = _checkDate.match(sexDate)
    if m:
      #print (m.groups())
-     #print (m.group(1), m.group(3), m.group(4), "prec = ", prec)
      yyyy = int(m.group(1))
      mm = int(m.group(3))
      dd = float(m.group(4))
      prec = int( 10.0**(6 - len(m.group(6))))
+     #print (m.group(1), m.group(3), m.group(4), "prec = ", prec)
+     if mm == 2:
+         if dd >= 30.0:
+            errorSexVal('invalid date for February, should not be ', sexDate)
+         # Check for leap years
+         elif dd >= 29.0 and (yyyy % 4 == 0 and (yyyy % 100 != 0 or yyyy % 400 == 0)) is False:
+            errorSexVal('invalid date for February, should not be ', sexDate)
      if prec == 1: _countDate1 += 1
      if prec == 10: _countDate10 += 1
      if prec == 100: _countDate100 += 1
@@ -299,7 +271,7 @@ def isoToSexDate(isodate, prec):
 
 
 def checkDate(rdict):
-   """ checks that rdict['date'] is valid and 
+   """ checks that rdict['date'] is valid and sets
        rdict['obsTime'] and 
        rdict['precTime'] if it is"""
    date = rdict['date']
