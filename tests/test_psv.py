@@ -1,6 +1,8 @@
 import os
 
-from astrometrica2ades import parse_header
+import pytest
+
+from astrometrica2ades import parse_header, parse_dataline
 
 class Test_ParseHeader(object):
 
@@ -150,3 +152,58 @@ class Test_ParseHeader(object):
         header = parse_header(self.header)
 
         assert expected_header == header
+
+class Test_ParseBody(object):
+
+    def setup_method(self):
+        test_mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
+        test_fh = open(test_mpcreport, 'r')
+        self.header = []
+        self.body = []
+        for line in test_fh:
+            if line[0:3] in ['COD','CON','OBS','MEA','TEL','ACK','AC2','COM','NET']:
+                self.header.append(line.rstrip())
+            else:
+                self.body.append(line.rstrip())
+        test_fh.close()
+
+    def test_line_too_long(self):
+
+        data_line = self.body[0] + 'foo'
+        expected_message = 'Invalid MPC80COL line (83 columns) in line:\n' + data_line
+
+        with pytest.raises(RuntimeError) as e_info:
+            data = parse_dataline(data_line)
+        assert expected_message == e_info.value.message
+
+    def test_unnumbered(self):
+        expected_data = {u'astCat': ' ',
+                         u'band': 'G',
+                         u'bl1': '         ',
+                         u'code': 'C',
+                         u'date': '2018 02 16.198172',
+                         u'dec': u'-4.41242',
+                         u'decSexagesimal': '-04 24 44.7 ',
+                         u'disc': ' ',
+                         u'mag': '20.2 ',
+                         u'notes': 'K',
+                         u'obsTime': u'2018-02-16T04:45:22.06Z',
+                         u'packedref': '      ',
+                         u'permID': None,
+                         u'precDec': 0.1,
+                         u'precRA': 0.01,
+                         u'precTime': 1,
+                         u'provID': u'2017 BT121',
+                         u'ra': u'171.72571',
+                         u'raSexagesimal': '11 26 54.17 ',
+                         u'stn': 'W85',
+                         u'subFmt': u'M92',
+                         u'totalid': '     K17BC1T',
+                         u'trkSub': None}
+
+
+        data_line = self.body[0]
+
+        data = parse_dataline(data_line)
+
+        assert expected_data == data
