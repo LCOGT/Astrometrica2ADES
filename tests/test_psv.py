@@ -11,9 +11,9 @@ class Test_ParseHeader(object):
         self.body = []
         for line in test_fh:
             if line[0:3] in ['COD','CON','OBS','MEA','TEL','ACK','AC2','COM','NET']:
-                self.header.append(line)
+                self.header.append(line.rstrip())
             else:
-                self.body.append(line)
+                self.body.append(line.rstrip())
         test_fh.close()
 
     def test_COD_header(self):
