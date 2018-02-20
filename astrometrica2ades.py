@@ -102,8 +102,8 @@ def parse_telescope(code_line):
     return telescope
 
 def error80(msg, l):
-   badLineMsg = 'Invalid MPC80COL line ('
-   raise RuntimeError(badLineMsg + msg + ') in line:\n' + l)
+    badLineMsg = 'Invalid MPC80COL line ('
+    raise RuntimeError(badLineMsg + msg + ') in line:\n' + l)
 
 def parse_dataline(line):
 
