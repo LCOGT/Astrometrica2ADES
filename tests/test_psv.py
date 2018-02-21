@@ -78,6 +78,8 @@ class Test_ParseHeader(object):
     def test_MEA_header(self):
 
         expected_header = ("# version=2017" + "\n"
+                           "# submitter" + "\n"
+                           "! name R. L. Seaman" + "\n"
                            "# measurers" + "\n"
                            "! name R. L. Seaman" + "\n"
                            )
@@ -91,6 +93,8 @@ class Test_ParseHeader(object):
     def test_MEA_header_multi_observers(self):
 
         expected_header = ("# version=2017" + "\n"
+                           "# submitter" + "\n"
+                           "! name R. L. Seaman" + "\n"
                            "# measurers" + "\n"
                            "! name R. L. Seaman" + "\n"
                            "! name E. J. Christensen" + "\n"
@@ -138,6 +142,8 @@ class Test_ParseHeader(object):
         expected_header = ( "# version=2017" + "\n"
                             "# observatory" + "\n"
                             "! mpcCode W85" + "\n"
+                            "# submitter" + "\n"
+                            "! name T. Lister" + "\n"
                             "# observers" + "\n"
                             "! name T. Lister" + "\n"
                             "# measurers" + "\n"
@@ -150,6 +156,21 @@ class Test_ParseHeader(object):
                            )
 
         header = parse_header(self.header)
+
+        assert expected_header == header
+
+    def test_submitter_from_config(self):
+        expected_header = ( "# version=2017" + "\n"
+                            "# observatory" + "\n"
+                            "! mpcCode Z99" + "\n"
+                            "# submitter" + "\n"
+                            "! name J. R. Random" + "\n"
+                           )
+
+        header_no_MEA = ("COD Z99" + "\n"
+                         )
+
+        header = parse_header(header_no_MEA)
 
         assert expected_header == header
 

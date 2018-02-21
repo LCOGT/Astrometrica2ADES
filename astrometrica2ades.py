@@ -17,13 +17,14 @@ import packUtil
 def parse_header(header_lines):
 
     version_string = "# version=2017"
+    site_code = ''
     observatory = observers = measurers = telescope = ''
 
     if type(header_lines) != list:
         header_lines = [header_lines,]
     for line in header_lines:
         if line[0:3] == 'COD':
-            observatory = parse_obscode(line[4:])
+            observatory, site_code = parse_obscode(line[4:])
         elif line[0:3] == 'OBS':
             observers = parse_observers(line[4:])
         elif line[0:3] == 'MEA':
@@ -33,6 +34,11 @@ def parse_header(header_lines):
     header = version_string + '\n'
     if observatory != '':
         header += observatory
+    submitter = determine_submitter(measurers, site_code)
+    if submitter != '':
+        header += submitter
+    else:
+        print("Error: Submitter is required")
     if observers != '':
         header += observers
     if measurers != '':
@@ -55,7 +61,7 @@ def parse_obscode(code_line):
     if site_name:
         observatory += "! name " + site_name +"\n"
 
-    return observatory
+    return observatory, site_code
 
 def parse_observers(code_line):
 
@@ -106,6 +112,28 @@ def parse_telescope(code_line):
         telescope += "! fRatio " + f_ratio + "\n"
 
     return telescope
+
+def determine_submitter(measurers, site_code):
+    submitter_lines = ''
+
+    measurer_lines = measurers.split('\n')
+    if len(measurer_lines) >= 2:
+        submitter = measurer_lines[1].replace('! name ','')
+    else:
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        try:
+            submitter = config.get('OBSERVATORY', site_code + '_SUBMITTER')
+        except configparser.NoOptionError:
+            submitter = ''
+            print("Could not determine submitter from measurers")
+            print('Either fix MEA line or define "<site_code>_SUBMITTER" in config.ini')
+
+    if submitter != '':
+        submitter_lines = "# submitter\n" + "! name " + submitter + "\n"
+
+    return submitter_lines
 
 def error80(msg, l):
     badLineMsg = 'Invalid MPC80COL line ('
