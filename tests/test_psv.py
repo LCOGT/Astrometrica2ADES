@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from astrometrica2ades import parse_header, parse_dataline
+from astrometrica2ades import parse_header, parse_dataline, convert_mpcreport_to_psv
 
 class Test_ParseHeader(object):
 
@@ -230,3 +230,26 @@ class Test_ParseBody(object):
         data = parse_dataline(data_line)
 
         assert expected_data == data
+
+class Test_Convert_mpcreport_to_psv:
+
+    def read_file_lines(self, filename):
+        test_fh = open(filename, 'r')
+        test_lines = test_fh.readlines()
+        test_fh.close()
+        return test_lines
+
+    @pytest.fixture(autouse=True)
+    def setup_method(self, tmpdir):
+        self.tmpdir = tmpdir.strpath
+
+        self.test_mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
+        test_psv = os.path.join('tests', 'data', 'MPCReport.psv')
+        self.test_psv_lines = self.read_file_lines(test_psv)
+
+    def test_convert(self):
+        outfile = os.path.join(self.tmpdir, 'out.psv')
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile)
+
+        outfile_lines = self.read_file_lines(outfile)
+        assert outfile_lines == self.test_psv_lines

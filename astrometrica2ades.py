@@ -299,30 +299,34 @@ def map_NET_to_catalog(header):
 
     return catalog
 
-if __name__ == '__main__':
+def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False):
+    """
+    Convert an Astrometrica-produced MPCReport.txt file in MPC1992 80 column
+    format to ADES PSV format.
 
-    rms_available = False
+    Parameters
+    ----------
+    mpcreport : str
+        Path/filename of the MPCReport.txt file
+    outFile : str
+        Path/filename of the output ADES PSV file
+    rms_available : bool, optional
+        Whether RMS values for RA, Dec etc are available
 
-    if len(sys.argv) == 2:
-        mpcreport = sys.argv[1]
-        outFileName = os.path.basename(mpcreport)
-        if '.txt' in outFileName:
-            outFileName = outFileName.replace('.txt', '.psv')
-        else:
-            outFileName += '.psv'
-        outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
-    elif len(sys.argv) == 3:
-        mpcreport = sys.argv[1]
-        outFile = sys.argv[2]
-    else:
-        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
-        exit()
+    returns
+    -------
+    num_objects : int
+        The number of objects written out (or -1 if nothing could be read from the input)
 
-    print("Reading from: %s, writing to: %s" % (mpcreport, outFile))
+    References
+    ----------
+    * https://minorplanetcenter.net/iau/info/ADES.html
+    """
+
     header, body = read_mpcreport_file(mpcreport)
     if len(header) == 0 or len(body) == 0:
         print("No valid data in file")
-        exit()
+        return -1
     print("Read %d header lines,%d observation lines from %s" % (len(header), len(body), mpcreport))
 
     out_fh = open(outFile, 'w')
@@ -347,6 +351,7 @@ if __name__ == '__main__':
         print(tbl_hdr, file=out_fh)
 
     # Parse and write out obsData records
+    num_objects = 0
     for line in body:
         data = parse_dataline(line)
         # For Astrometrica, photCat = astCat
@@ -371,4 +376,33 @@ if __name__ == '__main__':
                     data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
                     data['mag'], data['band'], data['photCat'], data['notes'], data['remarks'])
             print(tbl_data, file=out_fh)
+            num_objects += 1
     out_fh.close()
+
+    return num_objects
+
+if __name__ == '__main__':
+
+    rms_available = False
+
+    if len(sys.argv) == 2:
+        mpcreport = sys.argv[1]
+        outFileName = os.path.basename(mpcreport)
+        if '.txt' in outFileName:
+            outFileName = outFileName.replace('.txt', '.psv')
+        else:
+            outFileName += '.psv'
+        outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
+    elif len(sys.argv) == 3:
+        mpcreport = sys.argv[1]
+        outFile = sys.argv[2]
+    else:
+        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
+        exit()
+
+    print("Reading from: %s, writing to: %s" % (mpcreport, outFile))
+    num_objects = convert_mpcreport_to_psv(mpcreport, outFile, rms_available)
+    if num_objects > 0:
+        print("Wrote %d objects to %s" % (num_objects, outFile))
+    else:
+        print("Error processing file")
