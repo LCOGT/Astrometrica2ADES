@@ -310,6 +310,7 @@ if __name__ == '__main__':
     else:
         print(tbl_hdr, file=out_fh)
 
+    # Parse and write out obsData records
     for line in body:
         data = parse_dataline(line)
         # For Astrometrica, photCat = astCat
