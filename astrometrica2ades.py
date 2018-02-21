@@ -279,9 +279,9 @@ def map_NET_to_catalog(header):
     catalog = ''
     # Mapping of Astromerica names to MPC approved names from
     # https://www.minorplanetcenter.net/iau/info/ADESFieldValues.html
-    catalog_mapping = {'USNO-SA 2.0' : 'USNOSA2',
-                       'USNO-A 2.0'  : 'USNOA2',
-                       'USNO-B 1.0'  : 'USNOB1',
+    catalog_mapping = {'USNO-SA2.0'  : 'USNOSA2',  # Can't test, don't have CDs
+                       'USNO-A2.0'   : 'USNOA2',   # Can't test, don't have CDs
+                       'USNO-B1.0'   : 'USNOB1',
                        'UCAC-3'      : 'UCAC3',
                        'UCAC-4'      : 'UCAC4',
                        'URAT-1'      : 'URAT1',
