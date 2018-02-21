@@ -198,21 +198,54 @@ class Test_checkDate(object):
             data = checkDate(rdict)
         assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
 
-# These throws UnboundLocalError: local variable 'yy' referenced before assignment
-#checkDate("1800 01 01.3333333 ")
-#checkDate("1800 01 01.3333333")
-#checkDate("1920 01 01.3333333")
-#checkDate("1920 09 01.3333333")
-#checkDate("1920 10 01.3333333")
-#checkDate("1920 11 01.3333333")
-#checkDate("1920 12 01.3333333")
-#
-#   def test_bad_day9(self):
-#
-#       rdict = { 'date' : "1800 01 01.3333333 " }
-#       with pytest.raises(RuntimeError) as e_info:
-#           data = checkDate(rdict)
-#       assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+    def test_bad_day9(self):
+
+        rdict = { 'date' : "1800 01 01.3333333 " }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-2]) == e_info.value.message
+
+    def test_bad_day9a(self):
+
+        rdict = { 'date' : "1800 01 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+
+    def test_bad_day9b(self):
+
+        rdict = { 'date' : "1920 01 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+
+    def test_bad_day9c(self):
+
+        rdict = { 'date' : "1920 09 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+
+    def test_bad_day9d(self):
+
+        rdict = { 'date' : "1920 10 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+
+    def test_bad_day9e(self):
+
+        rdict = { 'date' : "1920 11 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+
+    def test_bad_day9f(self):
+
+        rdict = { 'date' : "1920 12 01.3333333" }
+        with pytest.raises(RuntimeError) as e_info:
+            data = checkDate(rdict)
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
 
     def test_bad_day10(self):
 
