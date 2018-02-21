@@ -89,7 +89,11 @@ def parse_telescope(code_line):
         design = tel_chunks[1]
         f_ratio = ''
     elif len(tel_chunks) == 3:
-        f_ratio = tel_chunks[1]
+        try:
+            f_ratio = tel_chunks[1].replace('f/', '')
+            f_ratio = "%.1f" % float(f_ratio)
+        except ValueError:
+            f_ratio = ''
         design = tel_chunks[2]
 
     telescope = ("# telescope" + "\n"

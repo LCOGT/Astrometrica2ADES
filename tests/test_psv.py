@@ -125,10 +125,10 @@ class Test_ParseHeader(object):
                            "! aperture 1.5" + "\n"
                            "! design reflector" + "\n"
                            "! detector CCD" + "\n"
-                           "! fRatio f/6" + "\n"
+                           "! fRatio 3.3" + "\n"
                            )
 
-        header_line = "TEL 1.5-m f/6 reflector + CCD"
+        header_line = "TEL 1.5-m f/3.3 reflector + CCD"
 
         header = parse_header(header_line)
 
@@ -146,7 +146,7 @@ class Test_ParseHeader(object):
                             "! aperture 1.0" + "\n"
                             "! design Ritchey-Chretien" + "\n"
                             "! detector CCD" + "\n"
-                            "! fRatio f/8" + "\n"
+                            "! fRatio 8.0" + "\n"
                            )
 
         header = parse_header(self.header)
