@@ -284,9 +284,9 @@ def map_NET_to_catalog(header):
                        'USNO-B1.0'   : 'USNOB1',
                        'UCAC-3'      : 'UCAC3',
                        'UCAC-4'      : 'UCAC4',
-                       'URAT-1'      : 'URAT1',
+                       'URAT-1'      : 'URAT1',    # Failed in Astrometrica, couldn't test
                        'NOMAD'       : 'NOMAD',
-                       'CMC-14'      : 'CMC14',
+                       'CMC-14'      : 'CMC14',    # Failed in Astrometrica, couldn't test
                        'CMC-15'      : 'CMC15',
                        'PPMXL'       : 'PPMXL',
                        'Gaia DR1'    : 'Gaia1',
