@@ -56,8 +56,8 @@ def parse_obscode(code_line):
         site_name = config.get('OBSERVATORY', site_code + '_SITE_NAME')
     except configparser.NoOptionError:
         site_name = None
-    observatory = ( "# observatory" + "\n"
-                    "! mpcCode " + site_code + "\n")
+    observatory = ("# observatory" + "\n"
+                   "! mpcCode " + site_code + "\n")
     if site_name:
         observatory += "! name " + site_name +"\n"
 
@@ -135,9 +135,9 @@ def determine_submitter(measurers, site_code):
 
     return submitter_lines
 
-def error80(msg, l):
+def error80(msg, line):
     badLineMsg = 'Invalid MPC80COL line ('
-    raise RuntimeError(badLineMsg + msg + ') in line:\n' + l)
+    raise RuntimeError(badLineMsg + msg + ') in line:\n' + line)
 
 def parse_dataline(line):
 
@@ -153,15 +153,15 @@ def parse_dataline(line):
     #   6: blank or a-e for asteroid satellites (embedded in obsDat)
     #   7: rest of obsDate
 
-    commonRegexHelp1 = ( '([A-za-z0-9 ]{12})'    # id group 1-12
-                         + '([ *+])'                # discovery group 13 may be ' ', '*' or '+'
-                         #+ '( AaBbcDdEFfGgGgHhIiJKkMmNOoPpRrSsTtUuVWwYyCQX2345vzjeL16789])' # notes group 14
-                         + '(.)'                 # notes can be anything
-                         )
-    commonRegexHelp2 = ( '(\d{4})'            # yyyy from obsDate 16-19
-                         + '([ a-e])'            # asteroid satellite embedded in date 20
-                         + '([0-9 .]{12})'       # rest of obsDate loosely checked 21-32
-                         )
+    commonRegexHelp1 = ('([A-za-z0-9 ]{12})'    # id group 1-12
+                        + '([ *+])'                # discovery group 13 may be ' ', '*' or '+'
+                        #+ '( AaBbcDdEFfGgGgHhIiJKkMmNOoPpRrSsTtUuVWwYyCQX2345vzjeL16789])' # notes group 14
+                        + '(.)'                 # notes can be anything
+                       )
+    commonRegexHelp2 = ('(\d{4})'            # yyyy from obsDate 16-19
+                        + '([ a-e])'            # asteroid satellite embedded in date 20
+                        + '([0-9 .]{12})'       # rest of obsDate loosely checked 21-32
+                       )
 
 
     # ----------- remainder depends on type.  This is for optical and SV
@@ -173,24 +173,25 @@ def parse_dataline(line):
     #  13: packedref and astCode as first character
     #  14: 3-character obs stn code
     #
-    normalLineRegex = re.compile( ( '^'
-                                       + commonRegexHelp1
-                                       + '([A PeCTMcEOHNnSVXx])' # codes group -- include SVXx but not Rrsv 15
-                                       + commonRegexHelp2
-                                       + '([0-9 .]{12})'       # Ra loosely checked 33-44
-                                       + '([-+ ][0-9 .]{11})'  # Dec loosely checked 45-56
-                                       + '(.{9})'              # mpc doc says blank but not 57-65
-                                       + '(.{5})'              # mag 66-70
-                                       + '(.{1})'              # band 71
-                                       + '(.{6})'              # packedref 72-77.  72 by itself is astCode
-                                       + '(.{3})'              # obs stn 78-80
-                                       + '$' )  )
+    normalLineRegex = re.compile(('^'
+                                  + commonRegexHelp1
+                                  + '([A PeCTMcEOHNnSVXx])' # codes group -- include SVXx but not Rrsv 15
+                                  + commonRegexHelp2
+                                  + '([0-9 .]{12})'       # Ra loosely checked 33-44
+                                  + '([-+ ][0-9 .]{11})'  # Dec loosely checked 45-56
+                                  + '(.{9})'              # mpc doc says blank but not 57-65
+                                  + '(.{5})'              # mag 66-70
+                                  + '(.{1})'              # band 71
+                                  + '(.{6})'              # packedref 72-77. 72 by itself is astCode
+                                  + '(.{3})'              # obs stn 78-80
+                                  + '$')
+                                )
 
-    ret  = {}
+    ret = {}
     if not line:
         return ret
     if len(line) > 80:
-        error80 ( repr(len(line)) + ' columns', line)
+        error80(repr(len(line)) + ' columns', line)
 
     ret['subFmt'] = 'M92'  # since were are MPC 80-col format
     m = normalLineRegex.match(line)  # optical, SVXx
@@ -202,35 +203,36 @@ def parse_dataline(line):
         ret['code'] = m.group(4)
         ret['date'] = m.group(5) + m.group(6) + m.group(7)
 
-        ret['raSexagesimal']   =   m.group(8)
-        ret['decSexagesimal'] =   m.group(9)
-        ret['bl1']  =   m.group(10)
-        ret['mag']  =   m.group(11)
-        ret['band'] =   m.group(12)
+        ret['raSexagesimal'] = m.group(8)
+        ret['decSexagesimal'] = m.group(9)
+        ret['bl1'] = m.group(10)
+        ret['mag'] = m.group(11)
+        ret['band'] = m.group(12)
         ret['packedref'] = m.group(13)
-        ret['stn']  =   m.group(14)
+        ret['stn'] = m.group(14)
 
         sexVals.checkDate(ret) # check date first
         sexVals.checkRa(ret)
         sexVals.checkDec(ret)
     else:
-        error80 ("no match for line", line)
+        error80("no match for line", line)
 
     #
     # more value sanity checks
     #
     sexVals.checkDate(ret) # check date always
-    if ( ret['code'] not in packUtil.validCodes):
-        error80 ("invalid column 14 " + ret['code']+ " in line " +  repr(lineNumber), line)
+    if ret['code'] not in packUtil.validCodes:
+        error80("invalid column 14 " + ret['code']+ " in line ", line)
     else:
         ret['mode'] = packUtil.codeDict[ret['code']]
 
     # No mapping of program codes yet
     ret['prog'] = '  '
-    if ( ret['notes'] not in packUtil.validNotes):
-       error80 ("invalid note "+ ret['notes'] +" in line "+ repr(lineNumber), line)
+    if ret['notes'] not in packUtil.validNotes:
+        error80("invalid note "+ ret['notes'] +" in line ", line)
 
-    ret['astCat']   = ret['packedref'][0] # catalog code; 72 - first in packed reference. Blank for submissions
+    # Determine catalog code; 72 - first in packed reference. Blank for submissions
+    ret['astCat'] = ret['packedref'][0]
 
     #
     # compute unpacked ID fields.  This may be only a trkSub
@@ -243,10 +245,10 @@ def parse_dataline(line):
     #print(permID, provID, trkSub)
 
     try:
-        packtest =  packUtil.packTupleID( (permID, provID, trkSub) )
+        packtest = packUtil.packTupleID((permID, provID, trkSub))
         if packtest != ret['totalid']:
             print ("ID does not round-trip; " + packtest + " vs. " + ret['totalid'])
-    except:
+    except RuntimeError:
         print ("fails pack: ", permID, provID, trkSub)
 
     return ret
@@ -261,7 +263,7 @@ def read_mpcreport_file(mpcreport_file):
     try:
         mpc_fh = open(mpcreport_file, 'r')
         for line in mpc_fh:
-            if line[0:3] in ['COD','CON','OBS','MEA','TEL','ACK','AC2','COM','NET']:
+            if line[0:3] in ['COD', 'CON', 'OBS', 'MEA', 'TEL', 'ACK', 'AC2', 'COM', 'NET']:
                 header.append(line.rstrip())
             elif '----- end -----' not in line:
                 body.append(line.rstrip())
@@ -277,19 +279,18 @@ def map_NET_to_catalog(header):
     catalog = ''
     # Mapping of Astromerica names to MPC approved names from
     # https://www.minorplanetcenter.net/iau/info/ADESFieldValues.html
-    catalog_mapping = {
-                        'USNO-SA 2.0' : 'USNOSA2',
-                        'USNO-A 2.0'  : 'USNOA2',
-                        'USNO-B 1.0'  : 'USNOB1',
-                        'UCAC-3'      : 'UCAC3',
-                        'UCAC-4'      : 'UCAC4',
-                        'URAT-1'      : 'URAT1',
-                        'NOMAD'       : 'NOMAD',
-                        'CMC-14'      : 'CMC14',
-                        'CMC-15'      : 'CMC15',
-                        'PPMXL'       : 'PPMXL',
-                        'Gaia DR1'    : 'Gaia1',
-                        'Gaia DR2'    : 'Gaia2',
+    catalog_mapping = {'USNO-SA 2.0' : 'USNOSA2',
+                       'USNO-A 2.0'  : 'USNOA2',
+                       'USNO-B 1.0'  : 'USNOB1',
+                       'UCAC-3'      : 'UCAC3',
+                       'UCAC-4'      : 'UCAC4',
+                       'URAT-1'      : 'URAT1',
+                       'NOMAD'       : 'NOMAD',
+                       'CMC-14'      : 'CMC14',
+                       'CMC-15'      : 'CMC15',
+                       'PPMXL'       : 'PPMXL',
+                       'Gaia DR1'    : 'Gaia1',
+                       'Gaia DR2'    : 'Gaia2',
                       }
     for line in header:
         if 'NET ' in line:
@@ -314,7 +315,7 @@ if __name__ == '__main__':
         mpcreport = sys.argv[1]
         outFile = sys.argv[2]
     else:
-        print("Usage: %s <MPCReport file> [output PSV file]" % ( os.path.basename(sys.argv[0])))
+        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
         exit()
 
     print("Reading from: %s, writing to: %s" % (mpcreport, outFile))
@@ -322,7 +323,7 @@ if __name__ == '__main__':
     if len(header) == 0 or len(body) == 0:
         print("No valid data in file")
         exit()
-    print("Read %d header lines, %d observation lines from %s" % (len(header), len(body), mpcreport))
+    print("Read %d header lines,%d observation lines from %s" % (len(header), len(body), mpcreport))
 
     out_fh = open(outFile, 'w')
 
@@ -331,10 +332,13 @@ if __name__ == '__main__':
     print(psv_header.rstrip(), file=out_fh)
 
     # Define and write obsData header
-    tbl_fmt =     '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%8s|%5s|%6s|%8s|%-5s|%-s'
-    tbl_hdr =     tbl_fmt % ('permID','provID','trkSub','mode','stn','prog','obsTime','ra','dec','astCat','mag','band','photCat','notes','remarks')
+    tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%8s|%5s|%6s|%8s|%-5s|%-s'
+    tbl_hdr = tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
+        'ra', 'dec', 'astCat', 'mag', 'band', 'photCat', 'notes', 'remarks')
     rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5s|%6s|%7s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%4s|%-5s|%-s'
-    rms_tbl_hdr = rms_tbl_fmt % ('permID','provID','trkSub','mode','stn','prog','obsTime','ra','dec','rmsRA','rmsDec','rmsCorr','astCat','mag','rmsMag','band','photCat','photAp','logSNR','seeing','exp','notes','remarks')
+    rms_tbl_hdr = rms_tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
+        'ra', 'dec', 'rmsRA', 'rmsDec', 'rmsCorr', 'astCat', 'mag', 'rmsMag', 'band', 'photCat', \
+        'photAp', 'logSNR', 'seeing', 'exp', 'notes', 'remarks')
 #    rms_tbl_data = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5.3f|%6.4f|%7.4f|%8s|%5s|%6.4f|%4s|%8s|%6.3f|%6.4f|%6s|%-5s|%-s'
 
     if rms_available:
@@ -363,6 +367,8 @@ if __name__ == '__main__':
             if rms_available:
                 pass
             else:
-                tbl_data = tbl_fmt % (permID,provID,trkSub,data['mode'],data['stn'],data['prog'],data['obsTime'],data['ra'],data['dec'],data['astCat'],data['mag'],data['band'],data['photCat'],data['notes'],data['remarks'])
+                tbl_data = tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
+                    data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
+                    data['mag'], data['band'], data['photCat'], data['notes'], data['remarks'])
             print(tbl_data, file=out_fh)
     out_fh.close()
