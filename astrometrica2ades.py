@@ -7,6 +7,8 @@ try:
 except ImportError:
     import ConfigParser as configparser
 import re
+import os
+import sys
 
 import sexVals
 import packUtil
@@ -188,7 +190,11 @@ def parse_dataline(line):
     sexVals.checkDate(ret) # check date always
     if ( ret['code'] not in packUtil.validCodes):
         error80 ("invalid column 14 " + ret['code']+ " in line " +  repr(lineNumber), line)
+    else:
+        ret['mode'] = packUtil.codeDict[ret['code']]
 
+    # No mapping of program codes yet
+    ret['prog'] = '  '
     if ( ret['notes'] not in packUtil.validNotes):
        error80 ("invalid note "+ ret['notes'] +" in line "+ repr(lineNumber), line)
 
@@ -212,3 +218,118 @@ def parse_dataline(line):
         print ("fails pack: ", permID, provID, trkSub)
 
     return ret
+
+def read_mpcreport_file(mpcreport_file):
+    '''Open the MPC 1992 format file specified by <mpcreport_file>, returning the
+    header lines in <header> and the observations in <body>'''
+
+    header = []
+    body = []
+
+    try:
+        mpc_fh = open(mpcreport_file, 'r')
+        for line in mpc_fh:
+            if line[0:3] in ['COD','CON','OBS','MEA','TEL','ACK','AC2','COM','NET']:
+                header.append(line.rstrip())
+            elif '----- end -----' not in line:
+                body.append(line.rstrip())
+    finally:
+        mpc_fh.close()
+
+    return header, body
+
+def map_NET_to_catalog(header):
+    '''Handle mapping of a possible NET line in the passed set of <header> lines
+    to a astrometric catalog'''
+
+    catalog = ''
+    # Mapping of Astromerica names to MPC approved names from
+    # https://www.minorplanetcenter.net/iau/info/ADESFieldValues.html
+    catalog_mapping = {
+                        'USNO-SA 2.0' : 'USNOSA2',
+                        'USNO-A 2.0'  : 'USNOA2',
+                        'USNO-B 1.0'  : 'USNOB1',
+                        'UCAC-3'      : 'UCAC3',
+                        'UCAC-4'      : 'UCAC4',
+                        'URAT-1'      : 'URAT1',
+                        'NOMAD'       : 'NOMAD',
+                        'CMC-14'      : 'CMC14',
+                        'CMC-15'      : 'CMC15',
+                        'PPMXL'       : 'PPMXL',
+                        'Gaia DR1'    : 'Gaia1',
+                        'Gaia DR2'    : 'Gaia2',
+                      }
+    for line in header:
+        if 'NET ' in line:
+            catalog_name = line.rstrip()[4:]
+            catalog = catalog_mapping.get(catalog_name, ' ')
+
+    return catalog
+
+if __name__ == '__main__':
+
+    rms_available = False
+
+    if len(sys.argv) == 2:
+        mpcreport = sys.argv[1]
+        outFileName = os.path.basename(mpcreport)
+        if '.txt' in outFileName:
+            outFileName = outFileName.replace('.txt', '.psv')
+        else:
+            outFileName += '.psv'
+        outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
+    elif len(sys.argv) == 3:
+        mpcreport = sys.argv[1]
+        outFile = sys.argv[2]
+    else:
+        print("Usage: %s <MPCReport file> [output PSV file]" % ( os.path.basename(sys.argv[0])))
+        exit()
+
+    print("Reading from: %s, writing to: %s" % (mpcreport, outFile))
+    header, body = read_mpcreport_file(mpcreport)
+    if len(header) == 0 or len(body) == 0:
+        print("No valid data in file")
+        exit()
+    print("Read %d header lines, %d observation lines from %s" % (len(header), len(body), mpcreport))
+
+    out_fh = open(outFile, 'w')
+
+    # Write obsContext out
+    psv_header = parse_header(header)
+    print(psv_header.rstrip(), file=out_fh)
+
+    # Define and write obsData header
+    tbl_fmt =     '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%8s|%5s|%6s|%8s|%-5s|%-s'
+    tbl_hdr =     tbl_fmt % ('permID','provID','trkSub','mode','stn','prog','obsTime','ra','dec','astCat','mag','band','photCat','notes','remarks')
+    rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5s|%6s|%7s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%4s|%-5s|%-s'
+    rms_tbl_hdr = rms_tbl_fmt % ('permID','provID','trkSub','mode','stn','prog','obsTime','ra','dec','rmsRA','rmsDec','rmsCorr','astCat','mag','rmsMag','band','photCat','photAp','logSNR','seeing','exp','notes','remarks')
+#    rms_tbl_data = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5.3f|%6.4f|%7.4f|%8s|%5s|%6.4f|%4s|%8s|%6.3f|%6.4f|%6s|%-5s|%-s'
+
+    if rms_available:
+        print(rms_tbl_hdr, file=out_fh)
+    else:
+        print(tbl_hdr, file=out_fh)
+
+    for line in body:
+        data = parse_dataline(line)
+        # For Astrometrica, photCat = astCat
+        if data['astCat'] == ' ':
+            data['astCat'] = map_NET_to_catalog(header)
+        data['photCat'] = data['astCat']
+        data['remarks'] = ''
+        permID = data['permID']
+        if permID is None:
+            permID = ''
+        provID = data['provID']
+        if provID is None:
+            provID = ''
+        trkSub = data['trkSub']
+        if trkSub is None:
+            trkSub = ''
+        if data != {} and data.get('trkSub', None) is None:
+            if rms_available:
+                pass
+            else:
+                tbl_data = tbl_fmt % (permID,provID,trkSub,data['mode'],data['stn'],data['prog'],data['obsTime'],data['ra'],data['dec'],data['astCat'],data['mag'],data['band'],data['photCat'],data['notes'],data['remarks'])
+            print(tbl_data, file=out_fh)
+    out_fh.close()
