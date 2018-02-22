@@ -253,6 +253,37 @@ def parse_dataline(line):
 
     return ret
 
+def read_astrometrica_logfile(log):
+
+    log_fh = open(log, 'r')
+
+    images_regex = re.compile('^\d{2}:\d{2}:\d{2} - Astrometry of Image \d* \(' + '(.*)\):')
+    version_regex = re.compile('^\s*(Astrometrica .*[^\r\n]+)')
+    astrom_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
+
+    images = []
+    while True:
+        line = log_fh.readline()
+        i = images_regex.match(line)
+        v = version_regex.match(line)
+        if v:
+            version = v.group(1)
+        elif i:
+            line2 = log_fh.readline()
+            if not line2: break
+            m = astrom_regex.search(line2)
+            image = i.group(1)
+            if m and image not in [i[0] for i in images]:
+                rms = {}
+                rms['nstars'] = m.group(1)
+                rms['dRA'] = m.group(2)
+                rms['dDec'] = m.group(3)
+                images.append((image , rms))
+        if not line: break
+    log_fh.close()
+
+    return version, images
+
 def read_mpcreport_file(mpcreport_file):
     '''Open the MPC 1992 format file specified by <mpcreport_file>, returning the
     header lines in <header> and the observations in <body>'''
