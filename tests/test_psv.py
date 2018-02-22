@@ -261,10 +261,10 @@ class Test_ReadAstrometricaLog(object):
 
     def test_read(self):
         expected_version = 'Astrometrica 4.10.0.431'
-        expected_images = [  ('lsc1m005-fl15-20180215-0129-e11.fits',
-                              {u'dDec': '0.10', u'dRA': '0.12', u'nstars': '439'}),
-                             ('lsc1m005-fl15-20180215-0130-e11.fits',
-                              {u'dDec': '0.09', u'dRA': '0.15', u'nstars': '383'})
+        expected_images = [('lsc1m005-fl15-20180215-0129-e11.fits',
+                             {u'dRA': '0.12', u'dDec': '0.10', u'dMag' : '0.10', u'nstars': '439'}),
+                           ('lsc1m005-fl15-20180215-0130-e11.fits',
+                             {u'dRA': '0.15', u'dDec': '0.09', u'dMag' : '0.09', u'nstars': '383'})
                           ]
 
         version, images = read_astrometrica_logfile(self.test_log)

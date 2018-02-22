@@ -254,31 +254,72 @@ def parse_dataline(line):
     return ret
 
 def read_astrometrica_logfile(log):
+    """
+    Read an Astrometrica log file, extracting the version number, the images
+    measured (with details about the no. of stars used and the RA, Dec & magnitude
+    rms values)
+
+    Parameters
+    ----------
+    log : str
+        Path/filename of the Astrometrica.log file
+
+    returns
+    -------
+    version : str
+        The version string of Astrometrica that was used
+    images : list
+        A list of tuples containing the image filename and a dictionary of the
+        RA, Dec, magnitude and no. of stars used in the astrometric fit.
+    """
 
     log_fh = open(log, 'r')
 
     images_regex = re.compile('^\d{2}:\d{2}:\d{2} - Astrometry of Image \d* \(' + '(.*)\):')
+    photom_regex = re.compile('^\d{2}:\d{2}:\d{2} - Photometry of Image \d* \(' + '(.*)\):')
     version_regex = re.compile('^\s*(Astrometrica .*[^\r\n]+)')
-    astrom_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
+    astrom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
+    photom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)[^=]+')
 
     images = []
     while True:
         line = log_fh.readline()
         i = images_regex.match(line)
         v = version_regex.match(line)
+        p = photom_regex.match(line)
         if v:
             version = v.group(1)
         elif i:
             line2 = log_fh.readline()
             if not line2: break
-            m = astrom_regex.search(line2)
+            m = astrom_rms_regex.search(line2)
             image = i.group(1)
-            if m and image not in [i[0] for i in images]:
+            if m:
                 rms = {}
                 rms['nstars'] = m.group(1)
                 rms['dRA'] = m.group(2)
                 rms['dDec'] = m.group(3)
-                images.append((image , rms))
+                image_list = [i[0] for i in images]
+                try:
+                    # Image is already in list, update values
+                    image_index = image_list.index(image)
+                    images[image_index]= (image, rms)
+                except ValueError:
+                    # Image is not in list, add details
+                    images.append((image , rms))
+        elif p:
+            print("Phot match")
+            line2 = log_fh.readline()
+            if not line2: break
+            m = photom_rms_regex.search(line2)
+            image = p.group(1)
+            if m:
+                image_list = [i[0] for i in images]
+                try:
+                    image_index = image_list.index(image)
+                    images[image_index][1]['dMag'] = m.group(2)
+                except ValueError:
+                    print("Image not found in list to update")
         if not line: break
     log_fh.close()
 
