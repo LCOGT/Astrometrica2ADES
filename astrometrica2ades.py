@@ -253,7 +253,7 @@ def parse_dataline(line):
 
     return ret
 
-def read_astrometrica_logfile(log):
+def read_astrometrica_logfile(log, dbg=False):
     """
     Read an Astrometrica log file, extracting the version number, the images
     measured (with details about the no. of stars used and the RA, Dec & magnitude
@@ -263,6 +263,8 @@ def read_astrometrica_logfile(log):
     ----------
     log : str
         Path/filename of the Astrometrica.log file
+    dbg: bool, optional
+        Turn on debugging print statements
 
     returns
     -------
@@ -271,6 +273,9 @@ def read_astrometrica_logfile(log):
     images : list
         A list of tuples containing the image filename and a dictionary of the
         RA, Dec, magnitude and no. of stars used in the astrometric fit.
+    asteroids: list
+        A list of dicts containing the id, observation time, RA, Dec, Mag rms,
+        SNR and FWHM of asteroid measured by Astrometrica.
     """
 
     log_fh = open(log, 'r')
@@ -280,16 +285,22 @@ def read_astrometrica_logfile(log):
     version_regex = re.compile('^\s*(Astrometrica .*[^\r\n]+)')
     astrom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
     photom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)[^=]+')
+    pos_regex = re.compile('^\d{2}:\d{2}:\d{2} - Position\ added|Moving\ Object')
+    pos_rms_regex = re.compile('([.0-9]+)')
 
     images = []
+    asteroids = []
     while True:
         line = log_fh.readline()
         i = images_regex.match(line)
         v = version_regex.match(line)
         p = photom_regex.match(line)
+        pos = pos_regex.match(line)
         if v:
+            # Match to version string
             version = v.group(1)
         elif i:
+            # Match to Astrometry image line
             line2 = log_fh.readline()
             if not line2: break
             m = astrom_rms_regex.search(line2)
@@ -308,7 +319,7 @@ def read_astrometrica_logfile(log):
                     # Image is not in list, add details
                     images.append((image , rms))
         elif p:
-            print("Phot match")
+            # Match to photometry line
             line2 = log_fh.readline()
             if not line2: break
             m = photom_rms_regex.search(line2)
@@ -320,10 +331,51 @@ def read_astrometrica_logfile(log):
                     images[image_index][1]['dMag'] = m.group(2)
                 except ValueError:
                     print("Image not found in list to update")
+        elif pos:
+            # Match to position added/Moving object detected lines
+            line2 = log_fh.readline()
+            if not line2: break
+            chunks = line2.rstrip().split()
+            if dbg: print("Pos match. line2 #chunks=", len(chunks))
+            asteroid = {}
+            if len(chunks) == 13:
+                # Object not known to Astrometrica (not in MPCORB.DAT etc)
+                ##   0  1   2               3   4   5               6                7        8         9    10    11     12
+                # RAhh mm ss.sss           sdd mm ss.ss           Mag                X        Y       Flux   FWHM  SNR   Fit RMS
+                #  10 05 04.994           +03 48 16.27           20.87           2018.73  2063.05    1951   0.8   12.6  0.151
+                asteroid['fwhm'] = chunks[10]
+                asteroid['snr'] = chunks[11]
+            elif len(chunks) == 16:
+                # Object known to Astrometrica (in MPCORB.DAT etc)
+                ##   0  1   2        3      4   5   6       7       8       9        10      11        12    13    14     15
+                # RAhh mm ss.sss  deltaRA? sdd mm ss.ss deltaDec?  Mag   deltaMag    X        Y       Flux   FWHM  SNR   Fit RMS
+                #   10 05 13.676   +3.44   +03 56 04.33   +0.58   19.77   -0.21   1650.78   898.43    5327   0.0   18.4  -.---
+                asteroid['fwhm'] = chunks[13]
+                asteroid['snr'] = chunks[14]
+            else:
+                print("Unexpected number of fields in line:\n", line2)
+            # Read uncertainties line
+            line3 = log_fh.readline()
+            if not line3: break
+            chunks = pos_rms_regex.findall(line3)
+            if dbg: print("Pos match. line3 #chunks=", len(chunks))
+            if len(chunks) == 3:
+                asteroid['rmsRA'] = chunks[0]
+                asteroid['rmsDec'] = chunks[1]
+                asteroid['rmsMag'] = chunks[2]
+            # Read MPC format line, parse and add bits we need later to dict
+            line4 = log_fh.readline()
+            if not line4: break
+            data = parse_dataline(line4.rstrip())
+            asteroid['totalid'] = data['totalid']
+            asteroid['obsTime'] = data['obsTime']
+            if asteroid not in asteroids:
+                asteroids.append(asteroid)
+            if dbg: print(asteroid)
         if not line: break
     log_fh.close()
 
-    return version, images
+    return version, images, asteroids
 
 def read_mpcreport_file(mpcreport_file):
     '''Open the MPC 1992 format file specified by <mpcreport_file>, returning the

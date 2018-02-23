@@ -266,8 +266,28 @@ class Test_ReadAstrometricaLog(object):
                            ('lsc1m005-fl15-20180215-0130-e11.fits',
                              {u'dRA': '0.15', u'dDec': '0.09', u'dMag' : '0.09', u'nstars': '383'})
                           ]
+        expected_asteroids = [{u'totalid' : '     P10GvKl', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.15', u'rmsDec' : '0.10', u'rmsMag' : '0.11', u'snr' : '4.3', u'fwhm' : '0.0'},
+                              {u'totalid' : '     P10GvKl', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.16', u'rmsDec' : '0.11', u'rmsMag' : '0.14', u'snr' : '1.4', u'fwhm' : '0.0'},
+                              {u'totalid' : '     P10GvKl', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.13', u'rmsDec' : '0.12', u'rmsMag' : '0.04', u'snr' : '7.9', u'fwhm' : '0.9'},
+                              {u'totalid' : '     K17BC1T', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.16', u'rmsDec' : '0.10', u'rmsMag' : '0.02', u'snr' : '18.9', u'fwhm' : '1.1'},
+                              {u'totalid' : 'W2017       ', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.16', u'rmsDec' : '0.11', u'rmsMag' : '0.02', u'snr' : '16.2', u'fwhm' : '1.1'},
+                              {u'totalid' : 'W2017       ', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.16', u'rmsDec' : '0.11', u'rmsMag' : '0.02', u'snr' : '18.9', u'fwhm' : '1.0'},
+                              {u'totalid' : '     K17BC1T', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.16', u'rmsDec' : '0.12', u'rmsMag' : '0.02', u'snr' : '19.0', u'fwhm' : '1.9'},
+                              {u'totalid' : '     K17BC1T', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.12', u'rmsDec' : '0.11', u'rmsMag' : '0.02', u'snr' : '19.3', u'fwhm' : '1.0'},
+                              {u'totalid' : 'W2017       ', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.12', u'rmsDec' : '0.11', u'rmsMag' : '0.02', u'snr' : '17.5', u'fwhm' : '1.0'},
+                              {u'totalid' : 'l8269       ', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.15', u'rmsDec' : '0.10', u'rmsMag' : '0.13', u'snr' : '1.1', u'fwhm' : '0.0'},
+                              {u'totalid' : 'l8269       ', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.17', u'rmsDec' : '0.13', u'rmsMag' : '0.06', u'snr' : '7.3', u'fwhm' : '1.3'},
+                              {u'totalid' : 'l8269       ', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.13', u'rmsDec' : '0.11', u'rmsMag' : '0.09', u'snr' : '5.4', u'fwhm' : '0.6'},
+                              {u'totalid' : 'K8785       ', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.15', u'rmsDec' : '0.10', u'rmsMag' : '0.05', u'snr' : '6.6', u'fwhm' : '0.0'},
+                              {u'totalid' : 'K8785       ', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.16', u'rmsDec' : '0.12', u'rmsMag' : '0.02', u'snr' : '13.6', u'fwhm' : '1.0'},
+                              {u'totalid' : 'K8785       ', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.15', u'rmsDec' : '0.14', u'rmsMag' : '0.03', u'snr' : '8.7', u'fwhm' : '1.8'},
+                              {u'totalid' : 'm1820       ', u'obsTime' : u'2018-02-16T04:45:22.06Z', u'rmsRA' : '0.23', u'rmsDec' : '0.20', u'rmsMag' : '0.05', u'snr' : '6.7', u'fwhm' : '2.7'},
+                              {u'totalid' : 'm1820       ', u'obsTime' : u'2018-02-16T04:53:15.88Z', u'rmsRA' : '0.19', u'rmsDec' : '0.16', u'rmsMag' : '0.05', u'snr' : '6.5', u'fwhm' : '1.6'},
+                              {u'totalid' : 'm1820       ', u'obsTime' : u'2018-02-16T05:03:48.76Z', u'rmsRA' : '0.13', u'rmsDec' : '0.12', u'rmsMag' : '0.06', u'snr' : '5.4', u'fwhm' : '0.7'},
+                             ]
 
-        version, images = read_astrometrica_logfile(self.test_log)
+        version, images, asteroids = read_astrometrica_logfile(self.test_log)
 
         assert expected_version == version
         assert expected_images == images
+        assert expected_asteroids == asteroids
