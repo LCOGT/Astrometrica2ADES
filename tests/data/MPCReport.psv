@@ -12,6 +12,8 @@
 ! design Ritchey-Chretien
 ! detector CCD
 ! fRatio 8.0
+# comment
+! line Converted to PSV with astrometrica2ades V0.0.2
  permID|provID     |  trkSub|mode|stn |prog|obsTime                |         ra|        dec|  astCat|  mag|  band| photCat|notes|remarks
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:45:22.06Z|  171.72571|   -4.41242|   Gaia1|20.2 |     G|   Gaia1|K    |
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:53:15.88Z|  171.72504|   -4.41236|   Gaia1|20.0 |     G|   Gaia1|K    |

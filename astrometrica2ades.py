@@ -14,6 +14,8 @@ from math import log10
 import sexVals
 import packUtil
 
+global _converter_version
+_converter_version = "astrometrica2ades V0.0.2"
 
 def parse_header(header_lines):
 
@@ -294,6 +296,7 @@ def read_astrometrica_logfile(log, dbg=False):
     asteroids = []
     avg_pix_size = None
     ap_radius_pix = None
+    version = ''
     while True:
         line = log_fh.readline()
         i = images_regex.match(line)
@@ -521,6 +524,16 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
 
     # Write obsContext out
     psv_header = parse_header(header)
+    if rms_available:
+        if version != '':
+            psv_header += ("# software" + "\n"
+                           "! astrometry " + version + "\n"
+                           "! photometry " + version + "\n"
+                           "! objectDetection " + version + "\n"
+                          )
+    psv_header += ("# comment" + "\n"
+                   "! line Converted to PSV with " + _converter_version + "\n"
+                  )
     print(psv_header.rstrip(), file=out_fh)
 
     # Define and write obsData header
