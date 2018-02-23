@@ -9,6 +9,7 @@ except ImportError:
 import re
 import os
 import sys
+from math import log10
 
 import sexVals
 import packUtil
@@ -287,18 +288,24 @@ def read_astrometrica_logfile(log, dbg=False):
     photom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)[^=]+')
     pos_regex = re.compile('^\d{2}:\d{2}:\d{2} - Position\ added|Moving\ Object')
     pos_rms_regex = re.compile('([.0-9]+)')
+    apradius_regex = re.compile('^\s*Aperture Radius\s*=\s*(\d)')
 
     images = []
     asteroids = []
+    avg_pix_size = None
+    ap_radius_pix = None
     while True:
         line = log_fh.readline()
         i = images_regex.match(line)
         v = version_regex.match(line)
         p = photom_regex.match(line)
         pos = pos_regex.match(line)
+        ap = apradius_regex.search(line)
         if v:
             # Match to version string
             version = v.group(1)
+        elif ap:
+            ap_radius_pix = float(ap.group(1))
         elif i:
             # Match to Astrometry image line
             line2 = log_fh.readline()
@@ -318,6 +325,16 @@ def read_astrometrica_logfile(log, dbg=False):
                 except ValueError:
                     # Image is not in list, add details
                     images.append((image , rms))
+            line_count = 0
+            while line_count < 6:
+                line2 = log_fh.readline()
+                if not line2: break
+                line_count += 1
+            pix_size_regex = re.compile('([.0-9]+)\"')
+            pix_size = pix_size_regex.findall(line2)
+            if dbg: print(pix_size)
+            if len(pix_size) == 2:
+                avg_pix_size = (float(pix_size[0]) + float(pix_size[1]))/2.0
         elif p:
             # Match to photometry line
             line2 = log_fh.readline()
@@ -375,6 +392,14 @@ def read_astrometrica_logfile(log, dbg=False):
         if not line: break
     log_fh.close()
 
+    # If we have an aperture radius (in pixels) and a pixel scale (in arcsec), go
+    # ahead and compute an aperture radius (in arcsec) and add this into the dict
+    # for each asteroid
+    if ap_radius_pix and avg_pix_size:
+        ap_radius_arcsec = ap_radius_pix * avg_pix_size
+        for ast in asteroids:
+            ast['photAp'] = ap_radius_arcsec
+
     return version, images, asteroids
 
 def read_mpcreport_file(mpcreport_file):
@@ -395,6 +420,38 @@ def read_mpcreport_file(mpcreport_file):
         mpc_fh.close()
 
     return header, body
+
+def find_astrometrica_log(mpcreport):
+    """
+    Based on the passed path to the MPCReport.txt file, determine if there is an
+    Astrometrica.log in the same directory. If there is, return the path to that
+    file.
+
+    Parameters
+    ----------
+     mpcreport : str
+        Path/filename of the MPCReport.txt file
+
+    returns
+    -------
+    outFile : str
+        Path/filename of the Astrometrica.log file
+   """
+
+    log = None
+    if mpcreport is None:
+        return log
+
+    path = os.path.dirname(mpcreport)
+    log = os.path.join(path, 'Astrometrica.log')
+    try:
+        with open(log) as fh:
+            line = fh.readline()
+    except IOError:
+        print("Could not matching Astrometrica.log to %s in %s" % (os.path.basename(mpcreport), path))
+        log = None
+
+    return log
 
 def map_NET_to_catalog(header):
     '''Handle mapping of a possible NET line in the passed set of <header> lines
@@ -423,7 +480,7 @@ def map_NET_to_catalog(header):
 
     return catalog
 
-def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False):
+def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None):
     """
     Convert an Astrometrica-produced MPCReport.txt file in MPC1992 80 column
     format to ADES PSV format.
@@ -453,6 +510,13 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False):
         return -1
     print("Read %d header lines,%d observation lines from %s" % (len(header), len(body), mpcreport))
 
+    if rms_available and astrometrica_log is not None:
+        version, images, asteroids = read_astrometrica_logfile(astrometrica_log)
+        fwhm_vals = [float(ast['fwhm']) for ast in asteroids if ast['fwhm'] != '0.0']
+        seeing = None
+        if len(fwhm_vals) > 0:
+            seeing = sum(fwhm_vals)/float(len(fwhm_vals))
+
     out_fh = open(outFile, 'w')
 
     # Write obsContext out
@@ -463,11 +527,10 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False):
     tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%8s|%5s|%6s|%8s|%-5s|%-s'
     tbl_hdr = tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
         'ra', 'dec', 'astCat', 'mag', 'band', 'photCat', 'notes', 'remarks')
-    rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5s|%6s|%7s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%4s|%-5s|%-s'
+    rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5s|%6s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%-5s|%-s'
     rms_tbl_hdr = rms_tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
-        'ra', 'dec', 'rmsRA', 'rmsDec', 'rmsCorr', 'astCat', 'mag', 'rmsMag', 'band', 'photCat', \
-        'photAp', 'logSNR', 'seeing', 'exp', 'notes', 'remarks')
-#    rms_tbl_data = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5.3f|%6.4f|%7.4f|%8s|%5s|%6.4f|%4s|%8s|%6.3f|%6.4f|%6s|%-5s|%-s'
+        'ra', 'dec', 'rmsRA', 'rmsDec', 'astCat', 'mag', 'rmsMag', 'band', 'photCat', \
+        'photAp', 'logSNR', 'seeing', 'notes', 'remarks')
 
     if rms_available:
         print(rms_tbl_hdr, file=out_fh)
@@ -494,7 +557,26 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False):
             trkSub = ''
         if data != {} and data.get('trkSub', None) is None:
             if rms_available:
-                pass
+                # Find asteroid uncertainties in the data read from the Astrometrica.log by
+                # matching on the totalid and obsTime
+                asteroid = [ast for ast in asteroids if ast['totalid'] == data['totalid'] and ast['obsTime'] == data['obsTime']]
+                asteroid = asteroid[0]
+                for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
+                    data[field] = asteroid[field]
+                try:
+                    logSNR = log10(float(asteroid['snr']))
+                    data['logSNR'] = "%6.4f" % logSNR
+                except ValueError:
+                    data['logSNR'] = '    '
+                data['seeing'] = '   '
+                if asteroid['fwhm'] != '0.0':
+                    data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
+
+                tbl_data = rms_tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
+                    data['prog'], data['obsTime'], data['ra'], data['dec'], data['rmsRA'], data['rmsDec'],\
+                    data['astCat'], data['mag'], data['rmsMag'], data['band'], \
+                    data['photCat'], data['photAp'], data['logSNR'], data['seeing'], \
+                    data['notes'], data['remarks'])
             else:
                 tbl_data = tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
                     data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
@@ -524,8 +606,13 @@ if __name__ == '__main__':
         print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
         exit()
 
-    print("Reading from: %s, writing to: %s" % (mpcreport, outFile))
-    num_objects = convert_mpcreport_to_psv(mpcreport, outFile, rms_available)
+    log_string = ''
+    astrometrica_log = find_astrometrica_log(mpcreport)
+    if astrometrica_log:
+        rms_available = True
+        log_string = ' and ' + astrometrica_log
+    print("Reading from: %s%s, writing to: %s" % (mpcreport, log_string, outFile))
+    num_objects = convert_mpcreport_to_psv(mpcreport, outFile, rms_available, astrometrica_log)
     if num_objects > 0:
         print("Wrote %d objects to %s" % (num_objects, outFile))
     else:
