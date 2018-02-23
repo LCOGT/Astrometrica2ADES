@@ -568,9 +568,11 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
                     data['logSNR'] = "%6.4f" % logSNR
                 except ValueError:
                     data['logSNR'] = '    '
-                data['seeing'] = '   '
                 if asteroid['fwhm'] != '0.0':
                     data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
+                else:
+                    # Substitute average seeing
+                    data['seeing'] = "%6.4f" % (float(seeing))
 
                 tbl_data = rms_tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
                     data['prog'], data['obsTime'], data['ra'], data['dec'], data['rmsRA'], data['rmsDec'],\
