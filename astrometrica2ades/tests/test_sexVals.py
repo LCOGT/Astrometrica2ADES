@@ -1,6 +1,6 @@
 import pytest
 
-from sexVals import checkSexagesimal, checkDate
+from astrometrica2ades.sexVals import checkSexagesimal, checkDate
 
 class Test_checkSexagesimal(object):
 

@@ -10,12 +10,13 @@ import re
 import os
 import sys
 from math import log10
+import pkg_resources
 
 import sexVals
 import packUtil
 
 global _converter_version
-_converter_version = "astrometrica2ades V0.0.2"
+_converter_version = "astrometrica2ades V0.0.3"
 
 def parse_header(header_lines):
 
@@ -52,11 +53,15 @@ def parse_header(header_lines):
 
 def parse_obscode(code_line):
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config_file = pkg_resources.resource_filename(__package__, os.path.join('data', 'config.ini'))
+    config.read(config_file)
 
     site_code = code_line.strip()
     try:
         site_name = config.get('OBSERVATORY', site_code + '_SITE_NAME')
+    except configparser.NoSectionError:
+        print("Could not find an OBSERVATORY section in ", config_file)
+        site_name = None
     except configparser.NoOptionError:
         site_name = None
     observatory = ("# observatory" + "\n"
@@ -124,11 +129,12 @@ def determine_submitter(measurers, site_code):
         submitter = measurer_lines[1].replace('! name ','')
     else:
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = pkg_resources.resource_filename(__package__, os.path.join('data', 'config.ini'))
+        config.read(config_file)
 
         try:
             submitter = config.get('OBSERVATORY', site_code + '_SUBMITTER')
-        except configparser.NoOptionError:
+        except (configparser.NoOptionError, configparser.NoSectionError):
             submitter = ''
             print("Could not determine submitter from measurers")
             print('Either fix MEA line or define "<site_code>_SUBMITTER" in config.ini')
@@ -601,34 +607,3 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     out_fh.close()
 
     return num_objects
-
-if __name__ == '__main__':
-
-    rms_available = False
-
-    if len(sys.argv) == 2:
-        mpcreport = sys.argv[1]
-        outFileName = os.path.basename(mpcreport)
-        if '.txt' in outFileName:
-            outFileName = outFileName.replace('.txt', '.psv')
-        else:
-            outFileName += '.psv'
-        outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
-    elif len(sys.argv) == 3:
-        mpcreport = sys.argv[1]
-        outFile = sys.argv[2]
-    else:
-        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
-        exit()
-
-    log_string = ''
-    astrometrica_log = find_astrometrica_log(mpcreport)
-    if astrometrica_log:
-        rms_available = True
-        log_string = ' and ' + astrometrica_log
-    print("Reading from: %s%s, writing to: %s" % (mpcreport, log_string, outFile))
-    num_objects = convert_mpcreport_to_psv(mpcreport, outFile, rms_available, astrometrica_log)
-    if num_objects > 0:
-        print("Wrote %d objects to %s" % (num_objects, outFile))
-    else:
-        print("Error processing file")

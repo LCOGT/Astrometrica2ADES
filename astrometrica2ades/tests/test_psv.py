@@ -1,13 +1,15 @@
 import os
 
 import pytest
+import pkg_resources
 
-from astrometrica2ades import *
+from astrometrica2ades.utils import *
 
 class Test_ParseHeader(object):
 
     def setup_method(self):
-        test_mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
+        test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+
         test_fh = open(test_mpcreport, 'r')
         self.header = []
         self.body = []
@@ -177,7 +179,8 @@ class Test_ParseHeader(object):
 class Test_ParseBody(object):
 
     def setup_method(self):
-        test_mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
+        test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+
         test_fh = open(test_mpcreport, 'r')
         self.header = []
         self.body = []
@@ -243,8 +246,9 @@ class Test_Convert_mpcreport_to_psv:
     def setup_method(self, tmpdir):
         self.tmpdir = tmpdir.strpath
 
-        self.test_mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
-        test_psv = os.path.join('tests', 'data', 'MPCReport.psv')
+        self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+
+        test_psv = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.psv'))
         self.test_psv_lines = self.read_file_lines(test_psv)
 
     def test_convert(self):
@@ -257,7 +261,7 @@ class Test_Convert_mpcreport_to_psv:
 class Test_ReadAstrometricaLog(object):
 
     def setup_method(self):
-        self.test_log = os.path.join('tests', 'data', 'Astrometrica.log')
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
 
     def test_read(self):
         expected_version = 'Astrometrica 4.10.0.431'
@@ -296,9 +300,9 @@ class Test_FindAstrometricaLog(object):
 
     def test_existing(self):
 
-        expected_log = os.path.join('tests', 'data', 'Astrometrica.log')
+        expected_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
 
-        mpcreport = os.path.join('tests', 'data', 'MPCReport.txt')
+        mpcreport =  pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
 
         log = find_astrometrica_log(mpcreport)
 
@@ -308,7 +312,7 @@ class Test_FindAstrometricaLog(object):
 
         expected_log = None
 
-        mpcreport = os.path.join('tests', 'MPCReport.txt')
+        mpcreport =  pkg_resources.resource_filename(__package__, os.path.join('tests', 'MPCReport.txt'))
 
         log = find_astrometrica_log(mpcreport)
 
