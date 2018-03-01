@@ -12,8 +12,8 @@ import sys
 from math import log10
 import pkg_resources
 
-import sexVals
-import packUtil
+from astrometrica2ades import sexVals
+from astrometrica2ades import packUtil
 
 global _converter_version
 _converter_version = "astrometrica2ades V0.0.3"
