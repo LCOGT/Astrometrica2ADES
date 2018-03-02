@@ -560,6 +560,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     num_objects = 0
     for line in body:
         data = parse_dataline(line)
+        print(data.get('totalid', ''), data.get('date', ''), data.get('raSexagesimal', ''), data.get('decSexagesimal', ''))
         # For Astrometrica, photCat = astCat
         if data['astCat'] == ' ':
             data['astCat'] = map_NET_to_catalog(header)
