@@ -27,17 +27,19 @@ def errorSexVal(msg, l):
 
 
 def valueError(s, line, c1, c2, value=None):
-   """ valueError raises an exception if s is not empty.
-       Inputs:
-          s: string to check for emptiness
-          line: input line
-          c1: first column in format
-          c2: second column in format
-          value:  if None must be all spaces.  Otherwise
-                  must in the value tuple
+   """
+   valueError raises an exception if s is not empty.
 
-       Return Value: None
-       Exceptions:  RuntimeError if s is not empty
+   Inputs:
+      s: string to check for emptiness
+      line: input line
+      c1: first column in format
+      c2: second column in format
+      value:  if None must be all spaces.  Otherwise
+          must in the value tuple
+
+   Return Value: None
+   Exceptions:  RuntimeError if s is not empty
    """
    if value:
       if s not in value:
@@ -129,21 +131,26 @@ _checks = [ (_checkNormal, _actionNormal),
 
 
 def checkSexagesimal(line):
-   """ checkSexagesimal parses a segidecmal value
-          line is of the form DD MM SS.sss (or HH MM SS.sss)
-          Return is (value, degrees, minutes, seconds, prec)
-             degrees (or hours)
-             minutes (may be 12.5 or 0)
-             seconds (may be 12.5 or 0)
-             prec:  sexagesimal precision:
-                0.001:  HH MM SS.sss
-                0.01:   HH MM SS.ss
-                0.1:    HH MM SS.s
-                1:      HH MM SS
-                6:      HH MM.m
-                60:     HH MM
-                #360:    HH.h
-                #3600:   HH
+   """
+   checkSexagesimal parses a sexagesimal value
+
+   Input:
+      line is of the form DD MM SS.sss (or HH MM SS.sss)
+
+   Output:
+      Return is (value, degrees, minutes, seconds, prec)
+        degrees (or hours)
+        minutes (may be 12.5 or 0)
+        seconds (may be 12.5 or 0)
+        prec:  sexagesimal precision:
+        0.001:  HH MM SS.sss
+        0.01:   HH MM SS.ss
+        0.1:    HH MM SS.s
+        1:      HH MM SS
+        6:      HH MM.m
+        60:     HH MM
+        #360:    HH.h
+        #3600:   HH
    """
    for (check, action) in _checks:
       m = check.match(line)
@@ -168,6 +175,7 @@ def twoDigit(t):
 
 def sexDateToISO(sexDate):
    """ translates date into iso date
+
        Inputs:
            sexDate:  sexDate string
        Return Value:
@@ -237,12 +245,15 @@ def sexDateToISO(sexDate):
 
 def isoToSexDate(isodate, prec):
    """ Translates isodate to sexDate format
-       Inputs:
-          isodate:  a valid ISO date 
-          prec:     precision value
-       Return Value:
-          sexdate
-       Errors:  Only if prec is wierd
+
+   Inputs:
+      isodate:  a valid ISO date
+      prec:     precision value
+
+   Return Value:
+      sexdate
+
+   Errors:  Only if prec is wierd
    """
    #print (isodate, prec)
    # -- do this later with regex which checks for Z, T and colons
@@ -293,6 +304,7 @@ arcsecToDegrees = 1.0/3600.0
 
 def sexRaToDecRa( sexRa ):
    """ converts sexagesimal Ra to decimal degrees
+
        Inputs: 
          sexRa:  string sexagesimal RA value in hms
        Return Value: 
@@ -313,6 +325,7 @@ def sexRaToDecRa( sexRa ):
 
 def decRaToSexRa( decRa, prec ):
    """ converts decimal degress Ra to sexagesimal Ra
+
        Inputs: 
          decRa: string decimal degrees RA 
          prec: precison value
@@ -355,6 +368,7 @@ def checkRa(rdict):
 
 def sexDeclToDecDecl( sexDec ):
    """ converts sexagesimal delination to decimal degrees
+
        Inputs: 
          sexDec:  string sexagesimal Dec value in dms
        Return Value: 
@@ -380,7 +394,8 @@ def sexDeclToDecDecl( sexDec ):
    return (decDecl, prec)
 
 def degDeclToSexDecl( sexDecl, prec ):
-   """ converts decimal degress Ra to sexagesimal Declination
+   """ converts decimal degrees Ra to sexagesimal Declination
+
        Inputs: 
          decDecl: string decimal degrees Decl 
          prec: precison value

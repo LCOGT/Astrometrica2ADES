@@ -438,10 +438,10 @@ def find_astrometrica_log(mpcreport):
 
     Parameters
     ----------
-     mpcreport : str
+    mpcreport : str
         Path/filename of the MPCReport.txt file
 
-    returns
+    Returns
     -------
     outFile : str
         Path/filename of the Astrometrica.log file

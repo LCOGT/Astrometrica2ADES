@@ -332,11 +332,13 @@ _initpackLetters()
         
 
 def unpackPackedID(packedID):
-   """ unpackePackedID unpacks an MPC 80-column ID
-       Input:
-          packedID: The 12-character packed ID
-       Output:
-          (permID, provID, trkSub)
+   """
+   unpackePackedID unpacks an MPC 80-column ID
+
+   Input:
+      packedID: The 12-character packed ID
+   Output:
+      (permID, provID, trkSub)
    """
    permID = None
    provID = None
@@ -467,13 +469,16 @@ def unpackPackedID(packedID):
 
 
 def packTupleID(triplet):
-   """ packTupleID packs an (permID, provID, trkSub) into
-       MCP 80-column format or raises an exception about why not
-       Input:
-          (permID, provID, trkSub)  or  [permID, provID, trkSub]
-       Output:
-          packedID: The 12-character packed ID
    """
+   packTupleID packs an (permID, provID, trkSub) into
+   MPC 80-column format or raises an exception about why not
+
+   Input:
+      (permID, provID, trkSub)  or  [permID, provID, trkSub]
+   Output:
+      packedID: The 12-character packed ID
+   """
+
    try:
       permID = triplet[0]
       provID = triplet[1]

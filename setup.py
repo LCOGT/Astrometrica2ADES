@@ -19,7 +19,7 @@ setup(name='astrometrica2ades',
                                           os.path.join('tests', 'data', 'MPCReport.psv'),
                                           ]},
       setup_requires=['pytest-runner'],
-      install_requires=['lxml', 'sphinx', 'sphinx-automodapi',],
+      install_requires=['lxml', 'sphinx', 'sphinx-automodapi', 'numpydoc'],
       tests_require=['pytest'],
       entry_points={'console_scripts': ['astrometrica2ades=astrometrica2ades.main:convert',
                                         ]})
