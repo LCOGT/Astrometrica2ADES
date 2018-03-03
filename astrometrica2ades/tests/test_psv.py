@@ -247,9 +247,12 @@ class Test_Convert_mpcreport_to_psv:
         self.tmpdir = tmpdir.strpath
 
         self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
 
         test_psv = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.psv'))
         self.test_psv_lines = self.read_file_lines(test_psv)
+        test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
+        self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
 
     def test_convert(self):
         outfile = os.path.join(self.tmpdir, 'out.psv')
@@ -257,6 +260,19 @@ class Test_Convert_mpcreport_to_psv:
 
         outfile_lines = self.read_file_lines(outfile)
         assert outfile_lines == self.test_psv_lines
+
+    def test_convert_with_rms(self):
+        outfile = os.path.join(self.tmpdir, 'out.psv')
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile, True, self.test_log)
+
+        outfile_lines = self.read_file_lines(outfile)
+        assert outfile_lines == self.test_psv_rms_lines
+
+    def test_missing_file(self):
+        outfile = os.path.join(self.tmpdir, 'out.psv')
+        num_objects = convert_mpcreport_to_psv('foobarbiff', outfile)
+
+        assert -1 == num_objects
 
 class Test_ReadAstrometricaLog(object):
 
@@ -315,5 +331,13 @@ class Test_FindAstrometricaLog(object):
         mpcreport =  pkg_resources.resource_filename(__package__, os.path.join('tests', 'MPCReport.txt'))
 
         log = find_astrometrica_log(mpcreport)
+
+        assert expected_log == log
+
+    def test_non_existing_none(self):
+
+        expected_log = None
+
+        log = find_astrometrica_log(None)
 
         assert expected_log == log

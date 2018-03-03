@@ -419,15 +419,14 @@ def read_mpcreport_file(mpcreport_file):
     body = []
 
     try:
-        mpc_fh = open(mpcreport_file, 'r')
-        for line in mpc_fh:
-            if line[0:3] in ['COD', 'CON', 'OBS', 'MEA', 'TEL', 'ACK', 'AC2', 'COM', 'NET']:
-                header.append(line.rstrip())
-            elif '----- end -----' not in line:
-                body.append(line.rstrip())
-    finally:
-        mpc_fh.close()
-
+        with open(mpcreport_file, 'r') as mpc_fh:
+            for line in mpc_fh:
+                if line[0:3] in ['COD', 'CON', 'OBS', 'MEA', 'TEL', 'ACK', 'AC2', 'COM', 'NET']:
+                    header.append(line.rstrip())
+                elif '----- end -----' not in line:
+                    body.append(line.rstrip())
+    except IOError:
+        print("File ", mpcreport_file, " does not exist")
     return header, body
 
 def find_astrometrica_log(mpcreport):
