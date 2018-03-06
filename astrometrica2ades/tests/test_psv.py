@@ -341,3 +341,77 @@ class Test_FindAstrometricaLog(object):
         log = find_astrometrica_log(None)
 
         assert expected_log == log
+
+class Test_DataModify(object):
+
+    def test_round_mag(self):
+
+        line = '     K18D01E KC2018 03 01.16162913 06 26.33 -23 24 51.0          20.78G      W87'
+
+        expected_data = {u'astCat': ' ',
+                         u'photCat' : ' ',
+                         u'remarks' : u'',
+                         u'band': 'G',
+                         u'bl1': '         ',
+                         u'code': 'C',
+                         u'date': '2018 03 01.161629',
+                         u'dec': u'-23.41417',
+                         u'decSexagesimal': '-23 24 51.0 ',
+                         u'disc': ' ',
+                         u'mag': '20.8 ',
+                         u'mode': u'CCD',
+                         u'notes': 'K',
+                         u'obsTime': u'2018-03-01T03:52:44.75Z',
+                         u'packedref': '      ',
+                         u'permID': u'',
+                         u'precDec': 0.1,
+                         u'precRA': 0.01,
+                         u'precTime': 1,
+                         u'prog': u'  ',
+                         u'provID': u'2018 DE1',
+                         u'ra': u'196.60971',
+                         u'raSexagesimal': '13 06 26.33 ',
+                         u'stn': 'W87',
+                         u'subFmt': u'M92',
+                         u'totalid': '     K18D01E',
+                         u'trkSub': u''}
+
+        data = parse_and_modify_data(line, display=False)
+
+        assert expected_data == data
+
+    def test_round_mag_with_cat(self):
+
+        line = '     K18D01E KC2018 03 01.16162913 06 26.33 -23 24 51.0          20.78G      W87'
+
+        expected_data = {u'astCat': 'Gaia1',
+                         u'photCat' : 'Gaia1',
+                         u'remarks' : u'',
+                         u'band': 'G',
+                         u'bl1': '         ',
+                         u'code': 'C',
+                         u'date': '2018 03 01.161629',
+                         u'dec': u'-23.41417',
+                         u'decSexagesimal': '-23 24 51.0 ',
+                         u'disc': ' ',
+                         u'mag': '20.8 ',
+                         u'mode': u'CCD',
+                         u'notes': 'K',
+                         u'obsTime': u'2018-03-01T03:52:44.75Z',
+                         u'packedref': '      ',
+                         u'permID': u'',
+                         u'precDec': 0.1,
+                         u'precRA': 0.01,
+                         u'precTime': 1,
+                         u'prog': u'  ',
+                         u'provID': u'2018 DE1',
+                         u'ra': u'196.60971',
+                         u'raSexagesimal': '13 06 26.33 ',
+                         u'stn': 'W87',
+                         u'subFmt': u'M92',
+                         u'totalid': '     K18D01E',
+                         u'trkSub': u''}
+
+        data = parse_and_modify_data(line, ast_catalog='Gaia1', display=False)
+
+        assert expected_data == data
