@@ -312,6 +312,29 @@ class Test_ReadAstrometricaLog(object):
         assert expected_images == images
         assert expected_asteroids == asteroids
 
+    def test_read_moving_objects(self):
+        test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica_moving_obj.log'))
+        expected_version = 'Astrometrica 4.10.0.431'
+        expected_images = [('elp0m411-kb80-20180305-0769-e91.fits',
+                             {u'dRA': '0.12', u'dDec': '0.10', u'dMag' : '0.13', u'nstars': '35'}),
+                          ]
+        expected_asteroids = [{u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:47:45.20Z', u'rmsRA' : '0.16', u'rmsDec' : '0.15', u'rmsMag' : '0.01', u'snr' : '54.8', u'fwhm' : '2.1', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:47:52.54Z', u'rmsRA' : '0.16', u'rmsDec' : '0.18', u'rmsMag' : '0.01', u'snr' : '55.5', u'fwhm' : '2.1', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:47:59.28Z', u'rmsRA' : '0.13', u'rmsDec' : '0.12', u'rmsMag' : '0.01', u'snr' : '54.7', u'fwhm' : '2.1', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:06.19Z', u'rmsRA' : '0.14', u'rmsDec' : '0.15', u'rmsMag' : '0.01', u'snr' : '59.4', u'fwhm' : '1.9', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:13.02Z', u'rmsRA' : '0.10', u'rmsDec' : '0.15', u'rmsMag' : '0.01', u'snr' : '53.0', u'fwhm' : '2.2', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:19.76Z', u'rmsRA' : '0.13', u'rmsDec' : '0.14', u'rmsMag' : '0.01', u'snr' : '57.2', u'fwhm' : '2.0', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:26.58Z', u'rmsRA' : '0.16', u'rmsDec' : '0.17', u'rmsMag' : '0.01', u'snr' : '60.5', u'fwhm' : '1.9', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:33.41Z', u'rmsRA' : '0.13', u'rmsDec' : '0.13', u'rmsMag' : '0.01', u'snr' : '60.7', u'fwhm' : '1.9', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:40.23Z', u'rmsRA' : '0.11', u'rmsDec' : '0.14', u'rmsMag' : '0.01', u'snr' : '57.9', u'fwhm' : '2.0', u'photAp': 3.42},
+                              {u'totalid' : '     K17V12R', u'obsTime' : u'2018-03-06T09:48:47.15Z', u'rmsRA' : '0.12', u'rmsDec' : '0.10', u'rmsMag' : '0.01', u'snr' : '61.6', u'fwhm' : '1.9', u'photAp': 3.42},
+                             ]
+        version, images, asteroids = read_astrometrica_logfile(test_log)
+
+        assert expected_version == version
+        assert expected_images == images
+        assert expected_asteroids == asteroids
+
 class Test_FindAstrometricaLog(object):
 
     def test_existing(self):

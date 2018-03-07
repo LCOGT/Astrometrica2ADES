@@ -1,0 +1,116 @@
+14:42:15 - Start 2018/03/06
+           Astrometrica 4.10.0.431
+           Image 1: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0760-e91.fits
+           Time Stamp: 2018 03 06, 9:47:45.2 UT
+           Image 2: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0761-e91.fits
+           Time Stamp: 2018 03 06, 9:47:52.5 UT
+           Image 3: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0762-e91.fits
+           Time Stamp: 2018 03 06, 9:47:59.3 UT
+           Image 4: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0763-e91.fits
+           Time Stamp: 2018 03 06, 9:48:06.2 UT
+           Image 5: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0764-e91.fits
+           Time Stamp: 2018 03 06, 9:48:13.0 UT
+           Image 6: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0765-e91.fits
+           Time Stamp: 2018 03 06, 9:48:19.8 UT
+           Image 7: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0766-e91.fits
+           Time Stamp: 2018 03 06, 9:48:26.6 UT
+           Image 8: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0767-e91.fits
+           Time Stamp: 2018 03 06, 9:48:33.4 UT
+           Image 9: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0768-e91.fits
+           Time Stamp: 2018 03 06, 9:48:40.3 UT
+           Image 10: Z:\apophis\eng\rocks\20180305\elp0m411-kb80-20180305-0769-e91.fits
+           Time Stamp: 2018 03 06, 9:48:47.1 UT
+           Settings for Scale and Orientation:
+             Focal Length = 3259.7mm ± 1.0%, Position Angle = -91.0° ± 1.0°, Pointing = ± 2.0'
+             Image flipped: no
+           Settings for CCD:
+             Pixel Width = 18.0µm, Pixel Height = 18.0µm, Saturation = 60000
+           Settings for Object Detection:
+             Aperture Radius = 3, Detection Limit = 4.0, Min.FWHM = 1.20, PSF-Fit RMS = 0.30, Search Radius = 1.00
+           Settings for Reference Star Matching:
+             Number of Stars = 50, Search Radius = 9.0, Magnitude = 8.0mag - 19.0mag
+14:42:30 - Gaia DR1: 359 Records read (23.8' x 33.3')
+           Center Coordinates: RA = 13h 11m 18.70s, De = +21° 39' 18.0"
+14:42:34 - Object List for Image 1 (elp0m411-kb80-20180305-0760-e91.fits): 
+           882 Detections (53 Stars, 37 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 2 (elp0m411-kb80-20180305-0761-e91.fits): 
+           927 Detections (51 Stars, 37 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 3 (elp0m411-kb80-20180305-0762-e91.fits): 
+           920 Detections (59 Stars, 39 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 4 (elp0m411-kb80-20180305-0763-e91.fits): 
+           888 Detections (56 Stars, 40 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 5 (elp0m411-kb80-20180305-0764-e91.fits): 
+           935 Detections (57 Stars, 38 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 6 (elp0m411-kb80-20180305-0765-e91.fits): 
+           865 Detections (61 Stars, 36 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 7 (elp0m411-kb80-20180305-0766-e91.fits): 
+           878 Detections (63 Stars, 41 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 8 (elp0m411-kb80-20180305-0767-e91.fits): 
+           864 Detections (53 Stars, 38 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 9 (elp0m411-kb80-20180305-0768-e91.fits): 
+           885 Detections (54 Stars, 36 Ref. Stars, 1 Mover)
+14:42:34 - Object List for Image 10 (elp0m411-kb80-20180305-0769-e91.fits): 
+           867 Detections (53 Stars, 36 Ref. Stars, 1 Mover)
+14:42:34 - Astrometry of Image 10 (elp0m411-kb80-20180305-0769-e91.fits): 
+           35 of 36 Reference Stars used: dRA = 0.12", dDe = 0.10"
+           X = -7.285399533E-6 -6.223818023E-8*x' -5.521747674E-6*y'
+           Y = -1.093525970E-4 -5.522560363E-6*x' +6.184504547E-8*y'
+           Origin: x0 = 763.0, y0 = 508.5
+           Center Coordinates: RA = 13h 11m 18.81s, De = +21° 38' 55.4"
+           Focal Length = 3259.4mm, Rotation = -90.65°
+           Pixel Size: 1.14" x 1.14", Field of View: 29.0' x 19.3' 
+14:42:34 - Photometry of Image 10 (elp0m411-kb80-20180305-0769-e91.fits): 
+           32 of 36 Reference Stars used: dmag = 0.13mag
+           Zero Point: 22.118mag
+14:42:54 - Moving Object detected (48.40"/min, PA 176.2°):
+  13 11 17.796 -564.92   +21 39 29.91 +451.90   11.79   -0.27    776.74   498.94   13498   2.1   54.8  0.014
+                 ±0.16                  ±0.15           ±0.01
+     K17V12R  C2018 03 06.40816213 11 17.80 +21 39 29.9          11.79G      V38
+       K17V0012R1 C2018 03 06.408162    13 11 17.80    +21 39 29.9     11.79 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408162     0.2    0.1             X.01  N  0.000001   2.026????????                               0V38
+  13 11 17.824 -565.60   +21 39 24.21 +451.92   11.78   -0.28    776.51   498.82   12997   2.1   55.5  0.012
+                 ±0.16                  ±0.18           ±0.01
+     K17V12R  C2018 03 06.40824713 11 17.82 +21 39 24.2          11.78G      V38
+       K17V0012R1 C2018 03 06.408247    13 11 17.82    +21 39 24.2     11.78 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408247     0.2    0.2             X.01  N  0.000001   2.042????????                               0V38
+  13 11 17.849 -566.28   +21 39 18.67 +451.69   11.81   -0.26    776.51   498.97   13509   2.1   54.7  0.020
+                 ±0.13                  ±0.12           ±0.01
+     K17V12R  C2018 03 06.40832513 11 17.85 +21 39 18.7          11.81G      V38
+       K17V0012R1 C2018 03 06.408325    13 11 17.85    +21 39 18.7     11.81 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408325     0.1    0.1             X.01  N  0.000001   2.044????????                               0V38
+  13 11 17.872 -566.99   +21 39 13.16 +451.58   11.85   -0.21    776.25   498.91   13404   1.9   59.4  0.015
+                 ±0.14                  ±0.15           ±0.01
+     K17V12R  C2018 03 06.40840513 11 17.87 +21 39 13.2          11.85G      V38
+       K17V0012R1 C2018 03 06.408405    13 11 17.87    +21 39 13.2     11.85 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408405     0.1    0.1             X.01  N  0.000001   2.031????????                               0V38
+  13 11 17.901 -567.60   +21 39 07.68 +451.41   11.81   -0.25    776.81   498.81   13436   2.2   53.0  0.020
+                 ±0.10                  ±0.15           ±0.01
+     K17V12R  C2018 03 06.40848413 11 17.90 +21 39 07.7          11.81G      V38
+       K17V0012R1 C2018 03 06.408484    13 11 17.90    +21 39 07.7     11.81 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408484     0.1    0.1             X.01  N  0.000001   2.027????????                               0V38
+  13 11 17.920 -568.35   +21 39 02.31 +451.36   11.75   -0.31    776.34   498.69   13584   2.0   57.2  0.011
+                 ±0.13                  ±0.14           ±0.01
+     K17V12R  C2018 03 06.40856213 11 17.92 +21 39 02.3          11.75G      V38
+       K17V0012R1 C2018 03 06.408562    13 11 17.92    +21 39 02.3     11.75 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408562     0.1    0.1             X.01  N  0.000001   2.050????????                               0V38
+  13 11 17.948 -568.97   +21 38 56.82 +451.17   11.78   -0.28    776.28   498.82   13982   1.9   60.5  0.014
+                 ±0.16                  ±0.17           ±0.01
+     K17V12R  C2018 03 06.40864113 11 17.95 +21 38 56.8          11.78G      V38
+       K17V0012R1 C2018 03 06.408641    13 11 17.95    +21 38 56.8     11.78 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408641     0.2    0.2             X.01  N  0.000001   2.047????????                               0V38
+  13 11 17.978 -569.56   +21 38 51.22 +450.90   11.78   -0.29    776.58   498.74   13639   1.9   60.7  0.012
+                 ±0.13                  ±0.13           ±0.01
+     K17V12R  C2018 03 06.40872013 11 17.98 +21 38 51.2          11.78G      V38
+       K17V0012R1 C2018 03 06.408720    13 11 17.98    +21 38 51.2     11.78 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408720     0.1    0.1             X.01  N  0.000001   2.040????????                               0V38
+  13 11 17.998 -570.30   +21 38 45.76 +450.83   11.76   -0.30    776.73   498.70   14019   2.0   57.9  0.012
+                 ±0.11                  ±0.14           ±0.01
+     K17V12R  C2018 03 06.40879913 11 18.00 +21 38 45.8          11.76G      V38
+       K17V0012R1 C2018 03 06.408799    13 11 18.00    +21 38 45.8     11.76 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408799     0.1    0.1             X.01  N  0.000001   2.053????????                               0V38
+  13 11 18.027 -570.93   +21 38 40.17 +450.63   11.78   -0.28    776.30   498.79   13595   1.9   61.6  0.010
+                 ±0.12                  ±0.10           ±0.01
+     K17V12R  C2018 03 06.40887913 11 18.03 +21 38 40.2          11.78G      V38
+       K17V0012R1 C2018 03 06.408879    13 11 18.03    +21 38 40.2     11.78 G      C                                           0V38
+       K17V0012R2+C2018 03 06.408879     0.1    0.1             X.01  N  0.000001   2.041????????                               0V38
+14:42:55 - End
