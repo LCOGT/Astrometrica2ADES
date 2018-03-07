@@ -10,7 +10,7 @@ import os
 setup(name='astrometrica2ades',
       author=['Tim Lister',],
       author_email=['tlister@lco.global',],
-      version="0.0.3",
+      version="0.0.4",
       packages=['astrometrica2ades'],
       package_dir={'astrometrica2ades': 'astrometrica2ades'},
       package_data={'astrometrica2ades': [os.path.join('data', 'config.ini'),

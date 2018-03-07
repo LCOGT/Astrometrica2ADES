@@ -17,7 +17,7 @@
 ! photometry Astrometrica 4.10.0.431
 ! objectDetection Astrometrica 4.10.0.431
 # comment
-! line Converted to PSV with astrometrica2ades V0.0.3
+! line Converted to PSV with astrometrica2ades V0.0.4
  permID|provID     |  trkSub|mode|stn |prog|obsTime                |         ra|        dec|rmsRA|rmsDec|  astCat|  mag|rmsMag|band| photCat|photAp|logSNR|seeing|notes|remarks
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:45:22.06Z|  171.72571|   -4.41242| 0.16|  0.10|   Gaia1|20.2 |  0.02|   G|   Gaia1|  1.56|1.2765|1.1000|K    |
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:53:15.88Z|  171.72504|   -4.41236| 0.16|  0.12|   Gaia1|20.0 |  0.02|   G|   Gaia1|  1.56|1.2788|1.9000|K    |

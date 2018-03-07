@@ -16,7 +16,8 @@ from astrometrica2ades import sexVals
 from astrometrica2ades import packUtil
 
 global _converter_version
-_converter_version = "astrometrica2ades V0.0.3"
+version = pkg_resources.require("astrometrica2ades")[0].version
+_converter_version = "astrometrica2ades V" + version
 
 def parse_header(header_lines):
 
