@@ -35,8 +35,7 @@ def valueError(s, line, c1, c2, value=None):
       line: input line
       c1: first column in format
       c2: second column in format
-      value:  if None must be all spaces.  Otherwise
-          must in the value tuple
+      value:  if None must be all spaces.  Otherwise must in the value tuple
 
    Return Value: None
    Exceptions:  RuntimeError if s is not empty

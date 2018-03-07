@@ -514,12 +514,12 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
     Parse a line of MPC1992 format data and return a dictionary of values.
     The parsed data is modified and augmented in the following ways:
     #. The magnitude is rounded to 1 d.p.
-    #. if `[ast_catalog]` is not None, then blank values in the parsed line are replaced
-        with this value and a `data['photCat']` entry is created with the same value.
+    #. If `[ast_catalog]` is not None, then blank values in the parsed line are replaced
+    with this value and a `data['photCat']` entry is created with the same value.
     #. If `rms_available=True`, then the `asteroids` dictionary will be searched for entries
-        that match the asteroid desigination and the observed time. If a match is found, the
-        `'rmsRA', 'rmsDec', 'rmsMag', 'photAp', 'logSNR'`, and `'seeing'` entries will added
-        into the `data` dictionary.
+    that match the asteroid desigination and the observed time. If a match is found, the
+    `'rmsRA', 'rmsDec', 'rmsMag', 'photAp', 'logSNR'`, and `'seeing'` entries will added
+    into the `data` dictionary.
 
     Parameters
     ----------
