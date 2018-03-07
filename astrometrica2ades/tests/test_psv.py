@@ -247,9 +247,12 @@ class Test_Convert_mpcreport_to_psv:
         self.tmpdir = tmpdir.strpath
 
         self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
 
         test_psv = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.psv'))
         self.test_psv_lines = self.read_file_lines(test_psv)
+        test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
+        self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
 
     def test_convert(self):
         outfile = os.path.join(self.tmpdir, 'out.psv')
@@ -257,6 +260,19 @@ class Test_Convert_mpcreport_to_psv:
 
         outfile_lines = self.read_file_lines(outfile)
         assert outfile_lines == self.test_psv_lines
+
+    def test_convert_with_rms(self):
+        outfile = os.path.join(self.tmpdir, 'out.psv')
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile, True, self.test_log)
+
+        outfile_lines = self.read_file_lines(outfile)
+        assert outfile_lines == self.test_psv_rms_lines
+
+    def test_missing_file(self):
+        outfile = os.path.join(self.tmpdir, 'out.psv')
+        num_objects = convert_mpcreport_to_psv('foobarbiff', outfile)
+
+        assert -1 == num_objects
 
 class Test_ReadAstrometricaLog(object):
 
@@ -317,3 +333,85 @@ class Test_FindAstrometricaLog(object):
         log = find_astrometrica_log(mpcreport)
 
         assert expected_log == log
+
+    def test_non_existing_none(self):
+
+        expected_log = None
+
+        log = find_astrometrica_log(None)
+
+        assert expected_log == log
+
+class Test_DataModify(object):
+
+    def test_round_mag(self):
+
+        line = '     K18D01E KC2018 03 01.16162913 06 26.33 -23 24 51.0          20.78G      W87'
+
+        expected_data = {u'astCat': ' ',
+                         u'photCat' : ' ',
+                         u'remarks' : u'',
+                         u'band': 'G',
+                         u'bl1': '         ',
+                         u'code': 'C',
+                         u'date': '2018 03 01.161629',
+                         u'dec': u'-23.41417',
+                         u'decSexagesimal': '-23 24 51.0 ',
+                         u'disc': ' ',
+                         u'mag': '20.8 ',
+                         u'mode': u'CCD',
+                         u'notes': 'K',
+                         u'obsTime': u'2018-03-01T03:52:44.75Z',
+                         u'packedref': '      ',
+                         u'permID': u'',
+                         u'precDec': 0.1,
+                         u'precRA': 0.01,
+                         u'precTime': 1,
+                         u'prog': u'  ',
+                         u'provID': u'2018 DE1',
+                         u'ra': u'196.60971',
+                         u'raSexagesimal': '13 06 26.33 ',
+                         u'stn': 'W87',
+                         u'subFmt': u'M92',
+                         u'totalid': '     K18D01E',
+                         u'trkSub': u''}
+
+        data = parse_and_modify_data(line, display=False)
+
+        assert expected_data == data
+
+    def test_round_mag_with_cat(self):
+
+        line = '     K18D01E KC2018 03 01.16162913 06 26.33 -23 24 51.0          20.78G      W87'
+
+        expected_data = {u'astCat': 'Gaia1',
+                         u'photCat' : 'Gaia1',
+                         u'remarks' : u'',
+                         u'band': 'G',
+                         u'bl1': '         ',
+                         u'code': 'C',
+                         u'date': '2018 03 01.161629',
+                         u'dec': u'-23.41417',
+                         u'decSexagesimal': '-23 24 51.0 ',
+                         u'disc': ' ',
+                         u'mag': '20.8 ',
+                         u'mode': u'CCD',
+                         u'notes': 'K',
+                         u'obsTime': u'2018-03-01T03:52:44.75Z',
+                         u'packedref': '      ',
+                         u'permID': u'',
+                         u'precDec': 0.1,
+                         u'precRA': 0.01,
+                         u'precTime': 1,
+                         u'prog': u'  ',
+                         u'provID': u'2018 DE1',
+                         u'ra': u'196.60971',
+                         u'raSexagesimal': '13 06 26.33 ',
+                         u'stn': 'W87',
+                         u'subFmt': u'M92',
+                         u'totalid': '     K18D01E',
+                         u'trkSub': u''}
+
+        data = parse_and_modify_data(line, ast_catalog='Gaia1', display=False)
+
+        assert expected_data == data

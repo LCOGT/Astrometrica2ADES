@@ -16,7 +16,8 @@ from astrometrica2ades import sexVals
 from astrometrica2ades import packUtil
 
 global _converter_version
-_converter_version = "astrometrica2ades V0.0.3"
+version = pkg_resources.require("astrometrica2ades")[0].version
+_converter_version = "astrometrica2ades V" + version
 
 def parse_header(header_lines):
 
@@ -275,7 +276,7 @@ def read_astrometrica_logfile(log, dbg=False):
     dbg: bool, optional
         Turn on debugging print statements
 
-    returns
+    Returns
     -------
     version : str
         The version string of Astrometrica that was used
@@ -419,15 +420,14 @@ def read_mpcreport_file(mpcreport_file):
     body = []
 
     try:
-        mpc_fh = open(mpcreport_file, 'r')
-        for line in mpc_fh:
-            if line[0:3] in ['COD', 'CON', 'OBS', 'MEA', 'TEL', 'ACK', 'AC2', 'COM', 'NET']:
-                header.append(line.rstrip())
-            elif '----- end -----' not in line:
-                body.append(line.rstrip())
-    finally:
-        mpc_fh.close()
-
+        with open(mpcreport_file, 'r') as mpc_fh:
+            for line in mpc_fh:
+                if line[0:3] in ['COD', 'CON', 'OBS', 'MEA', 'TEL', 'ACK', 'AC2', 'COM', 'NET']:
+                    header.append(line.rstrip())
+                elif '----- end -----' not in line:
+                    body.append(line.rstrip())
+    except IOError:
+        print("File ", mpcreport_file, " does not exist")
     return header, body
 
 def find_astrometrica_log(mpcreport):
@@ -489,6 +489,78 @@ def map_NET_to_catalog(header):
 
     return catalog
 
+def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=False, seeing=None, display=True):
+    """
+    Parse a line of MPC1992 format data and return a dictionary of values.
+    The parsed data is modified and augmented in the following ways:
+    #. The magnitude is rounded to 1 d.p.
+    #. if `[ast_catalog]` is not None, then blank values in the parsed line are replaced
+        with this value and a `data['photCat']` entry is created with the same value.
+    #. If `rms_available=True`, then the `asteroids` dictionary will be searched for entries
+        that match the asteroid desigination and the observed time. If a match is found, the
+        `'rmsRA', 'rmsDec', 'rmsMag', 'photAp', 'logSNR'`, and `'seeing'` entries will added
+        into the `data` dictionary.
+
+    Parameters
+    ----------
+    line : str
+        An 80 column line of data in MPC1992 format to be parsed.
+    ast_catalog: str, optional
+        Optional astrometric catalog name to populate
+    asteroids: str, optional (required if `rms_available=True`)
+        dictionary of asteroid RMS data (from `read_astrometrica_logfile()`)
+    rms_available: bool, optional
+        Whether RMS values are available
+    seeing: float, optional (required if `rms_available=True`)
+        Average value of the seeing to substitute if no per-measurement FWHM is available
+    display: bool, optional
+        Whether to print the decoded asteroid desigination, date and position
+
+    Returns
+    -------
+    data: dict
+        A dictinary of data for the asteroid.
+    """
+
+    data = parse_dataline(line)
+    if display: print(data.get('totalid', ''), data.get('date', ''), data.get('raSexagesimal', ''), data.get('decSexagesimal', ''))
+    # For Astrometrica, photCat = astCat
+    if data['astCat'] == ' ' and ast_catalog is not None:
+        data['astCat'] = ast_catalog
+    data['photCat'] = data['astCat']
+    data['remarks'] = ''
+    if data['permID'] is None:
+        data['permID'] = ''
+    if data['provID'] is None:
+        data['provID'] = ''
+    if data['trkSub'] is None:
+        data['trkSub'] = ''
+    if data != {}:
+        if rms_available and asteroids is not None:
+            # Find asteroid uncertainties in the data read from the Astrometrica.log by
+            # matching on the totalid and obsTime
+            asteroid = [ast for ast in asteroids if ast['totalid'] == data['totalid'] and ast['obsTime'] == data['obsTime']]
+            asteroid = asteroid[0]
+            for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
+                data[field] = asteroid[field]
+            try:
+                logSNR = log10(float(asteroid['snr']))
+                data['logSNR'] = "%6.4f" % logSNR
+            except ValueError:
+                data['logSNR'] = '    '
+            if asteroid['fwhm'] != '0.0':
+                data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
+            else:
+                # Substitute average seeing
+                data['seeing'] = "%6.4f" % (float(seeing))
+        # Re-round magnitude
+        try:
+            mag = float(data['mag'])
+            data['mag'] = "%.1f " % mag
+        except ValueError:
+            pass
+    return data
+
 def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None):
     """
     Convert an Astrometrica-produced MPCReport.txt file in MPC1992 80 column
@@ -503,7 +575,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     rms_available : bool, optional
         Whether RMS values for RA, Dec etc are available
 
-    returns
+    Returns
     -------
     num_objects : int
         The number of objects written out (or -1 if nothing could be read from the input)
@@ -525,6 +597,9 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
         seeing = None
         if len(fwhm_vals) > 0:
             seeing = sum(fwhm_vals)/float(len(fwhm_vals))
+    else:
+        asteroids = None
+        seeing = None
 
     out_fh = open(outFile, 'w')
 
@@ -556,51 +631,22 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     else:
         print(tbl_hdr, file=out_fh)
 
+    ast_catalog = map_NET_to_catalog(header)
     # Parse and write out obsData records
     num_objects = 0
     for line in body:
-        data = parse_dataline(line)
-        print(data.get('totalid', ''), data.get('date', ''), data.get('raSexagesimal', ''), data.get('decSexagesimal', ''))
-        # For Astrometrica, photCat = astCat
-        if data['astCat'] == ' ':
-            data['astCat'] = map_NET_to_catalog(header)
-        data['photCat'] = data['astCat']
-        data['remarks'] = ''
-        permID = data['permID']
-        if permID is None:
-            permID = ''
-        provID = data['provID']
-        if provID is None:
-            provID = ''
-        trkSub = data['trkSub']
-        if trkSub is None:
-            trkSub = ''
-        if data != {} and data.get('trkSub', None) is None:
-            if rms_available:
-                # Find asteroid uncertainties in the data read from the Astrometrica.log by
-                # matching on the totalid and obsTime
-                asteroid = [ast for ast in asteroids if ast['totalid'] == data['totalid'] and ast['obsTime'] == data['obsTime']]
-                asteroid = asteroid[0]
-                for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
-                    data[field] = asteroid[field]
-                try:
-                    logSNR = log10(float(asteroid['snr']))
-                    data['logSNR'] = "%6.4f" % logSNR
-                except ValueError:
-                    data['logSNR'] = '    '
-                if asteroid['fwhm'] != '0.0':
-                    data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
-                else:
-                    # Substitute average seeing
-                    data['seeing'] = "%6.4f" % (float(seeing))
+        data = parse_and_modify_data(line, ast_catalog, asteroids, rms_available, seeing, display=True)
 
-                tbl_data = rms_tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
+        if data != {} and data.get('trkSub', '') == '':
+            if rms_available:
+
+                tbl_data = rms_tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
                     data['prog'], data['obsTime'], data['ra'], data['dec'], data['rmsRA'], data['rmsDec'],\
                     data['astCat'], data['mag'], data['rmsMag'], data['band'], \
                     data['photCat'], data['photAp'], data['logSNR'], data['seeing'], \
                     data['notes'], data['remarks'])
             else:
-                tbl_data = tbl_fmt % (permID, provID, trkSub, data['mode'], data['stn'], \
+                tbl_data = tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
                     data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
                     data['mag'], data['band'], data['photCat'], data['notes'], data['remarks'])
             print(tbl_data, file=out_fh)
