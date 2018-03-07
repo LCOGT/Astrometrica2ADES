@@ -295,9 +295,10 @@ def read_astrometrica_logfile(log, dbg=False):
     version_regex = re.compile('^\s*(Astrometrica .*[^\r\n]+)')
     astrom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
     photom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)[^=]+')
-    pos_regex = re.compile('^\d{2}:\d{2}:\d{2} - Position\ added|Moving\ Object')
+    pos_regex = re.compile('^\d{2}:\d{2}:\d{2} - (Position|Moving)')
     pos_rms_regex = re.compile('([.0-9]+)')
     apradius_regex = re.compile('^\s*Aperture Radius\s*=\s*(\d)')
+    mov_end_regex = re.compile('^\d{2}:\d{2}:\d{2} - \w+\W+')
 
     images = []
     asteroids = []
@@ -360,45 +361,64 @@ def read_astrometrica_logfile(log, dbg=False):
                     print("Image not found in list to update")
         elif pos:
             # Match to position added/Moving object detected lines
-            line2 = log_fh.readline()
-            if not line2: break
-            chunks = line2.rstrip().split()
-            if dbg: print("Pos match. line2 #chunks=", len(chunks))
-            asteroid = {}
-            if len(chunks) == 13:
-                # Object not known to Astrometrica (not in MPCORB.DAT etc)
-                ##   0  1   2               3   4   5               6                7        8         9    10    11     12
-                # RAhh mm ss.sss           sdd mm ss.ss           Mag                X        Y       Flux   FWHM  SNR   Fit RMS
-                #  10 05 04.994           +03 48 16.27           20.87           2018.73  2063.05    1951   0.8   12.6  0.151
-                asteroid['fwhm'] = chunks[10]
-                asteroid['snr'] = chunks[11]
-            elif len(chunks) == 16:
-                # Object known to Astrometrica (in MPCORB.DAT etc)
-                ##   0  1   2        3      4   5   6       7       8       9        10      11        12    13    14     15
-                # RAhh mm ss.sss  deltaRA? sdd mm ss.ss deltaDec?  Mag   deltaMag    X        Y       Flux   FWHM  SNR   Fit RMS
-                #   10 05 13.676   +3.44   +03 56 04.33   +0.58   19.77   -0.21   1650.78   898.43    5327   0.0   18.4  -.---
-                asteroid['fwhm'] = chunks[13]
-                asteroid['snr'] = chunks[14]
-            else:
-                print("Unexpected number of fields in line:\n", line2)
-            # Read uncertainties line
-            line3 = log_fh.readline()
-            if not line3: break
-            chunks = pos_rms_regex.findall(line3)
-            if dbg: print("Pos match. line3 #chunks=", len(chunks))
-            if len(chunks) == 3:
-                asteroid['rmsRA'] = chunks[0]
-                asteroid['rmsDec'] = chunks[1]
-                asteroid['rmsMag'] = chunks[2]
-            # Read MPC format line, parse and add bits we need later to dict
-            line4 = log_fh.readline()
-            if not line4: break
-            data = parse_dataline(line4.rstrip())
-            asteroid['totalid'] = data['totalid']
-            asteroid['obsTime'] = data['obsTime']
-            if asteroid not in asteroids:
-                asteroids.append(asteroid)
-            if dbg: print(asteroid)
+            i = 0
+            if dbg: print(line)
+            while i <= 10:
+                line2 = log_fh.readline()
+                if not line2: break
+                chunks = line2.rstrip().split()
+                if dbg: print("i=",i," Line=",line2)
+                if dbg: print("Pos match. line2 #chunks=", len(chunks))
+                asteroid = {}
+                if len(chunks) == 13:
+                    # Object not known to Astrometrica (not in MPCORB.DAT etc)
+                    ##   0  1   2               3   4   5               6                7        8         9    10    11     12
+                    # RAhh mm ss.sss           sdd mm ss.ss           Mag                X        Y       Flux   FWHM  SNR   Fit RMS
+                    #  10 05 04.994           +03 48 16.27           20.87           2018.73  2063.05    1951   0.8   12.6  0.151
+                    asteroid['fwhm'] = chunks[10]
+                    asteroid['snr'] = chunks[11]
+                elif len(chunks) == 16:
+                    # Object known to Astrometrica (in MPCORB.DAT etc)
+                    ##   0  1   2        3      4   5   6       7       8       9        10      11        12    13    14     15
+                    # RAhh mm ss.sss  deltaRA? sdd mm ss.ss deltaDec?  Mag   deltaMag    X        Y       Flux   FWHM  SNR   Fit RMS
+                    #   10 05 13.676   +3.44   +03 56 04.33   +0.58   19.77   -0.21   1650.78   898.43    5327   0.0   18.4  -.---
+                    asteroid['fwhm'] = chunks[13]
+                    asteroid['snr'] = chunks[14]
+                else:
+                    print("Unexpected number of fields in line:\n", line2)
+                # Read uncertainties line
+                line3 = log_fh.readline()
+                if not line3: break
+                chunks = pos_rms_regex.findall(line3)
+                if dbg: print("Pos match. line3 #chunks=", len(chunks))
+                if len(chunks) == 3:
+                    asteroid['rmsRA'] = chunks[0]
+                    asteroid['rmsDec'] = chunks[1]
+                    asteroid['rmsMag'] = chunks[2]
+                # Read MPC format line, parse and add bits we need later to dict
+                line4 = log_fh.readline()
+                if not line4: break
+                if dbg: print(line4)
+                data = parse_dataline(line4.rstrip())
+                asteroid['totalid'] = data['totalid']
+                asteroid['obsTime'] = data['obsTime']
+                if asteroid not in asteroids:
+                    asteroids.append(asteroid)
+                if dbg: print(asteroid)
+                # Read AstDys .rwo format lines
+                junk = log_fh.readline()
+                junk = log_fh.readline()
+                # Record position in file, look at next line
+                last_pos = log_fh.tell()
+                line = log_fh.readline()
+                if dbg: print("lastline=",line)
+                if pos_regex.match(line) or mov_end_regex.match(line):
+                    if dbg: print("Found new position line, rewinding")
+                    log_fh.seek(last_pos)
+                    break
+
+                log_fh.seek(last_pos)
+                i += 1
         if not line: break
     log_fh.close()
 
@@ -540,19 +560,20 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
             # Find asteroid uncertainties in the data read from the Astrometrica.log by
             # matching on the totalid and obsTime
             asteroid = [ast for ast in asteroids if ast['totalid'] == data['totalid'] and ast['obsTime'] == data['obsTime']]
-            asteroid = asteroid[0]
-            for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
-                data[field] = asteroid[field]
-            try:
-                logSNR = log10(float(asteroid['snr']))
-                data['logSNR'] = "%6.4f" % logSNR
-            except ValueError:
-                data['logSNR'] = '    '
-            if asteroid['fwhm'] != '0.0':
-                data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
-            else:
-                # Substitute average seeing
-                data['seeing'] = "%6.4f" % (float(seeing))
+            if len(asteroid) > 0:
+                asteroid = asteroid[0]
+                for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
+                    data[field] = asteroid[field]
+                try:
+                    logSNR = log10(float(asteroid['snr']))
+                    data['logSNR'] = "%6.4f" % logSNR
+                except ValueError:
+                    data['logSNR'] = '    '
+                if asteroid['fwhm'] != '0.0':
+                    data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
+                else:
+                    # Substitute average seeing
+                    data['seeing'] = "%6.4f" % (float(seeing))
         # Re-round magnitude
         try:
             mag = float(data['mag'])
