@@ -200,6 +200,32 @@ class Test_ParseBody(object):
             data = parse_dataline(data_line)
         assert expected_message == e_info.value.message
 
+    def test_line_not_a_line(self):
+
+        data_line = None
+        expected_data = {}
+
+        data = parse_dataline(data_line)
+        assert expected_data == data
+
+    def test_line_satellite_line(self):
+
+        data_line = '     K13J22N  S2018 02 28.02505 16 47 10.53 +01 01 26.6          19   RLEE024C51'
+        expected_message = 'Invalid MPC80COL line (no match for line) in line:\n' + data_line
+
+        with pytest.raises(RuntimeError) as e_info:
+            data = parse_dataline(data_line)
+        assert expected_message == e_info.value.message
+
+    def test_line_invalid_note(self):
+
+        data_line = '     K13J22N ZC2018 02 28.02505 16 47 10.53 +01 01 26.6          19.0 RLEE024F51'
+        expected_message = 'Invalid MPC80COL line (invalid note Z in line ) in line:\n' + data_line
+
+        with pytest.raises(RuntimeError) as e_info:
+            data = parse_dataline(data_line)
+        assert expected_message == e_info.value.message
+
     def test_unnumbered(self):
         expected_data = {u'astCat': ' ',
                          u'band': 'G',

@@ -150,6 +150,31 @@ def error80(msg, line):
     raise RuntimeError(badLineMsg + msg + ') in line:\n' + line)
 
 def parse_dataline(line):
+    """
+    Parse a line of MPC1992 80 column format and return a dictionary of decoded values.
+
+    Parameters
+    ----------
+    line: str
+        An 80 column line in MPC1992 format
+
+    Returns
+    -------
+    ret: dict
+        A dictionary of parsed parameters as key/value pairs.
+
+    Raises
+    ------
+    error80(RuntimeError):
+        Raised if there is a problem parsing the line (usually too long/trailing
+        whitespace) or a problem decoding one of the individual fields.
+
+    Notes
+    -----
+    This is a cut-down version of the `ADES_Master.mpc80coltoxml.decode80ColumnDataLine`
+    that only supports the optical line format (since Astrometrica cannot produce
+    radar, roving observer or satellite format lines)
+    """
 
     #
     # matches optical line; also V and S and X
@@ -185,7 +210,7 @@ def parse_dataline(line):
     #
     normalLineRegex = re.compile(('^'
                                   + commonRegexHelp1
-                                  + '([A PeCTMcEOHNnSVXx])' # codes group -- include SVXx but not Rrsv 15
+                                  + '([A PeCTMcEOHNn])' # codes group --  do not include  RrSsVvXx 15
                                   + commonRegexHelp2
                                   + '([0-9 .]{12})'       # Ra loosely checked 33-44
                                   + '([-+ ][0-9 .]{11})'  # Dec loosely checked 45-56
@@ -211,6 +236,7 @@ def parse_dataline(line):
         ret['disc'] = m.group(2)
         ret['notes'] = m.group(3)
         ret['code'] = m.group(4)
+        print("Code=",ret['code'])
         ret['date'] = m.group(5) + m.group(6) + m.group(7)
 
         ret['raSexagesimal'] = m.group(8)
@@ -513,13 +539,10 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
     """
     Parse a line of MPC1992 format data and return a dictionary of values.
     The parsed data is modified and augmented in the following ways:
+
     #. The magnitude is rounded to 1 d.p.
-    #. If `[ast_catalog]` is not None, then blank values in the parsed line are replaced
-    with this value and a `data['photCat']` entry is created with the same value.
-    #. If `rms_available=True`, then the `asteroids` dictionary will be searched for entries
-    that match the asteroid desigination and the observed time. If a match is found, the
-    `'rmsRA', 'rmsDec', 'rmsMag', 'photAp', 'logSNR'`, and `'seeing'` entries will added
-    into the `data` dictionary.
+    #. If `[ast_catalog]` is not None, then blank values in the parsed line are replaced with this value and a `data['photCat']` entry is created with the same value.
+    #. If `rms_available=True`, then the `asteroids` dictionary will be searched for entries that match the asteroid desigination and the observed time. If a match is found, the `'rmsRA', 'rmsDec', 'rmsMag', 'photAp', 'logSNR'`, and `'seeing'` entries will added into the `data` dictionary.
 
     Parameters
     ----------
