@@ -236,7 +236,6 @@ def parse_dataline(line):
         ret['disc'] = m.group(2)
         ret['notes'] = m.group(3)
         ret['code'] = m.group(4)
-        print("Code=",ret['code'])
         ret['date'] = m.group(5) + m.group(6) + m.group(7)
 
         ret['raSexagesimal'] = m.group(8)
