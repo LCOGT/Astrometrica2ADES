@@ -680,7 +680,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     for line in body:
         data = parse_and_modify_data(line, ast_catalog, asteroids, rms_available, seeing, display=True)
 
-        if data != {} and data.get('trkSub', '') == '':
+        if data != {}:
             if rms_available:
 
                 tbl_data = rms_tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
