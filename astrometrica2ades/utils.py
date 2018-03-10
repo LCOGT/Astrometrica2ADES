@@ -604,7 +604,7 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
             pass
     return data
 
-def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None):
+def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None, display=True):
     """
     Convert an Astrometrica-produced MPCReport.txt file in MPC1992 80 column
     format to ADES PSV format.
@@ -678,7 +678,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     # Parse and write out obsData records
     num_objects = 0
     for line in body:
-        data = parse_and_modify_data(line, ast_catalog, asteroids, rms_available, seeing, display=True)
+        data = parse_and_modify_data(line, ast_catalog, asteroids, rms_available, seeing, display)
 
         if data != {}:
             if rms_available:
