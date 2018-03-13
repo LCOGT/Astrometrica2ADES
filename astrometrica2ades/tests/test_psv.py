@@ -445,22 +445,28 @@ class Test_Convert_mpcreport_to_psv:
         test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
         self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
 
-    def test_convert(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile)
+        self.outfile = os.path.join(self.tmpdir, 'out.psv')
 
-        outfile_lines = self.read_file_lines(outfile)
+    def test_convert(self):
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
         assert outfile_lines == self.test_psv_lines
 
     def test_convert_with_rms(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile, True, self.test_log)
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
 
-        outfile_lines = self.read_file_lines(outfile)
+        outfile_lines = self.read_file_lines(self.outfile)
         assert outfile_lines == self.test_psv_rms_lines
 
     def test_missing_file(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv('foobarbiff', outfile)
+        num_objects = convert_mpcreport_to_psv('foobarbiff', self.outfile)
 
         assert -1 == num_objects
+
+    def test_no_asteroids(self):
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica_noasts.log'))
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_lines

@@ -636,10 +636,15 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
 
     if rms_available and astrometrica_log is not None:
         version, images, asteroids = read_astrometrica_logfile(astrometrica_log)
-        fwhm_vals = [float(ast['fwhm']) for ast in asteroids if ast['fwhm'] != '0.0']
         seeing = None
-        if len(fwhm_vals) > 0:
-            seeing = sum(fwhm_vals)/float(len(fwhm_vals))
+        if len(asteroids) == 0:
+            print("Read no asteroid data from %s" % astrometrica_log)
+            rms_available = False
+        else:
+            fwhm_vals = [float(ast['fwhm']) for ast in asteroids if ast['fwhm'] != '0.0']
+            if len(fwhm_vals) > 0:
+                seeing = sum(fwhm_vals)/float(len(fwhm_vals))
+
     else:
         asteroids = None
         seeing = None
