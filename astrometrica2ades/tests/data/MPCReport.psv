@@ -13,11 +13,14 @@
 ! detector CCD
 ! fRatio 8.0
 # comment
-! line Converted to PSV with astrometrica2ades V0.0.4
+! line Converted to PSV with astrometrica2ades V0.0.5
  permID|provID     |  trkSub|mode|stn |prog|obsTime                |         ra|        dec|  astCat|  mag|  band| photCat|notes|remarks
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:45:22.06Z|  171.72571|   -4.41242|   Gaia1|20.2 |     G|   Gaia1|K    |
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T04:53:15.88Z|  171.72504|   -4.41236|   Gaia1|20.0 |     G|   Gaia1|K    |
        |2017 BT121 |        | CCD|W85 |    |2018-02-16T05:03:48.76Z|  171.72404|   -4.41242|   Gaia1|20.0 |     G|   Gaia1|K    |
+       |           | P10GvKl| CCD|W85 |    |2018-02-16T04:45:22.06Z|  171.83142|   -4.30553|   Gaia1|21.6 |     G|   Gaia1|K    |
+       |           | P10GvKl| CCD|W85 |    |2018-02-16T04:53:15.88Z|  171.82888|   -4.30692|   Gaia1|21.7 |     G|   Gaia1|K    |
+       |           | P10GvKl| CCD|W85 |    |2018-02-16T05:03:48.76Z|  171.82537|   -4.30883|   Gaia1|21.3 |     G|   Gaia1|K    |
  208785|           |        | CCD|W85 |    |2018-02-16T04:45:22.06Z|  171.97183|   -4.13603|   Gaia1|20.6 |     G|   Gaia1|K    |
  208785|           |        | CCD|W85 |    |2018-02-16T04:53:15.88Z|  171.97088|   -4.13583|   Gaia1|20.5 |     G|   Gaia1|K    |
  208785|           |        | CCD|W85 |    |2018-02-16T05:03:48.76Z|  171.96958|   -4.13550|   Gaia1|20.7 |     G|   Gaia1|K    |

@@ -1,0 +1,125 @@
+18:32:30 - Start 2018/03/07
+           Astrometrica 4.10.0.431
+           Image 1: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0128-e11.fits
+           Time Stamp: 2018 03 08, 1:41:52.2 UT
+           Image 2: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0129-e11.fits
+           Time Stamp: 2018 03 08, 1:47:35.2 UT
+           Image 3: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0130-e11.fits
+           Time Stamp: 2018 03 08, 1:53:19.1 UT
+           Image 4: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0131-e11.fits
+           Time Stamp: 2018 03 08, 1:59:02.3 UT
+           Image 5: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0132-e11.fits
+           Time Stamp: 2018 03 08, 2:04:45.2 UT
+           Settings for Scale and Orientation:
+             Focal Length = 7942.0mm ± 1.0%, Position Angle = 180.0° ± 1.0°, Pointing = ± 1.0'
+             Image flipped:  horizontally
+           Settings for CCD:
+             Pixel Width = 15.0µm, Pixel Height = 15.0µm, Saturation = 65535
+           Settings for Object Detection:
+             Aperture Radius = 4, Detection Limit = 4.0, Min.FWHM = 2.50, PSF-Fit RMS = 0.40, Search Radius = 1.75
+           Settings for Reference Star Matching:
+             Number of Stars = 50, Search Radius = 5.0, Magnitude = 11.0mag - 22.0mag
+18:33:14 - Gaia DR1: 4422 Records read (28.6' x 28.6')
+           Center Coordinates: RA = 10h 34m 00.70s, De = -82° 43' 54.0"
+18:33:22 - Object List for Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           2755 Detections (2234 Stars, 1982 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 2 (cpt1m012-fl06-20180307-0129-e11.fits): 
+           2672 Detections (2155 Stars, 1931 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 3 (cpt1m012-fl06-20180307-0130-e11.fits): 
+           2422 Detections (1992 Stars, 1804 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 4 (cpt1m012-fl06-20180307-0131-e11.fits): 
+           2668 Detections (2115 Stars, 1904 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 5 (cpt1m012-fl06-20180307-0132-e11.fits): 
+           2445 Detections (1932 Stars, 1767 Ref. Stars, 1 Mover)
+18:33:22 - Astrometry of Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           1922 of 1982 Reference Stars used: dRA = 0.13", dDe = 0.09"
+           X = +2.169634922E-5 +1.889030746E-6*x' -3.030523333E-8*y'               -1.505685870E-14*x'^2 +2.745882616E-14*x'*y' -1.446909748E-15*y'^2               -1.632361467E-16*x'^3 -2.939464242E-17*x'^2*y' -1.483493272E-16*x'*y'^2 +1.204286301E-17*y'^3
+           Y = -1.255802852E-5 -3.109098187E-8*x' -1.888732291E-6*y'               +1.456786609E-14*x'^2 +6.165631001E-15*x'*y' -5.130675520E-14*y'^2               -2.385894062E-18*x'^3 +2.041167330E-16*x'^2*y' +1.134606772E-17*x'*y'^2 +1.278781337E-16*y'^3
+           Origin: x0 = 2048.0, y0 = 2048.0
+           Center Coordinates: RA = 10h 33m 58.34s, De = -82° 43' 56.6"
+           Focal Length = 7940.2mm, Rotation = -0.94°
+           Pixel Size: 0.39" x 0.39", Field of View: 26.6' x 26.6' 
+18:33:22 - Photometry of Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           1973 of 1982 Reference Stars used: dmag = 0.07mag
+           Zero Point: 29.262mag
+18:33:59 - End
+18:37:23 - Position added manually from file cpt1m012-fl06-20180307-0129-e11.fits:
+  10 33 47.159           -82 43 56.47           20.68           2108.04  2049.73    2683   0.3    5.1  0.368
+                 ±0.13                  ±0.09           ±0.10
+     K18E00B  C2018 03 08.07471310 33 47.16 -82 43 56.5          20.7 G      K93
+       K18E0000B1 C2018 03 08.074713    10 33 47.16    -82 43 56.5     20.7  G      C                                           0K93
+       K18E0000B2+C2018 03 08.074713     0.1    0.1             X.1   N  0.000001   1.047????????                               0K93
+18:39:32 - Position added manually from file cpt1m012-fl06-20180307-0130-e11.fits:
+  10 33 48.087           -82 43 55.84           21.29           2109.27  2051.04    1417   0.0    1.7  -.---
+                 ±0.14                  ±0.09           ±0.29
+     K18E00B  C2018 03 08.07869310 33 48.09 -82 43 55.8          21.3 G      K93
+       K18E0000B1 C2018 03 08.078693    10 33 48.09    -82 43 55.8     21.3  G      C                                           0K93
+       K18E0000B2+C2018 03 08.078693     0.1    0.1             X.3   N  0.000001   0.626????????                               0K93
+18:40:07 - Position added manually from file cpt1m012-fl06-20180307-0131-e11.fits:
+  10 33 49.859           -82 43 52.96           20.92           2106.36  2046.84    2110   0.0    0.1  -.---
+                 ±0.15                  ±0.09           ±0.22
+     K18E00B  C2018 03 08.08266510 33 49.86 -82 43 53.0          20.9 G      K93
+       K18E0000B1 C2018 03 08.082665    10 33 49.86    -82 43 53.0     20.9  G      C                                           0K93
+       K18E0000B2+C2018 03 08.082665     0.1    0.1             X.2   N  0.000001   0.733????????                               0K93
+18:41:22 - Position added manually from file cpt1m012-fl06-20180307-0128-e11.fits:
+  10 33 46.516           -82 43 57.50           21.32           2105.61  2049.43    1498   0.4    5.6  0.364
+                 ±0.14                  ±0.10           ±0.14
+     K18E00B  C2018 03 08.07074310 33 46.52 -82 43 57.5          21.3 G      K93
+       K18E0000B1 C2018 03 08.070743    10 33 46.52    -82 43 57.5     21.3  G      C                                           0K93
+       K18E0000B2+C2018 03 08.070743     0.1    0.1             X.1   N  0.000001   0.912????????                               0K93
+18:47:55 - Start 2018/03/07
+           Astrometrica 4.10.0.431
+           Image 1: Z:\data\tlister\Asteroids\20180307\cpt1m010-fl16-20180307-0140-e11.fits
+           Time Stamp: 2018 03 08, 1:57:52.9 UT
+           Image 2: Z:\data\tlister\Asteroids\20180307\cpt1m010-fl16-20180307-0141-e11.fits
+           Time Stamp: 2018 03 08, 2:03:35.8 UT
+           Settings for Scale and Orientation:
+             Focal Length = 7940.8mm ± 1.0%, Position Angle = 0.0° ± 2.0°, Pointing = ± 1.0'
+             Image flipped:  horizontally
+           Settings for CCD:
+             Pixel Width = 15.0µm, Pixel Height = 15.0µm, Saturation = 65535
+           Settings for Object Detection:
+             Aperture Radius = 4, Detection Limit = 5.0, Min.FWHM = 2.25, PSF-Fit RMS = 0.40, Search Radius = 2.00
+           Settings for Reference Star Matching:
+             Number of Stars = 50, Search Radius = 5.0, Magnitude = 11.0mag - 22.0mag
+18:48:14 - Gaia DR1: 4342 Records read (28.6' x 28.6')
+           Center Coordinates: RA = 10h 33m 38.30s, De = -82° 45' 08.0"
+18:48:17 - Object List for Image 1 (cpt1m010-fl16-20180307-0140-e11.fits): 
+           2876 Detections (2405 Stars, 2098 Ref. Stars, 0 Movers)
+18:48:17 - Object List for Image 2 (cpt1m010-fl16-20180307-0141-e11.fits): 
+           2951 Detections (2142 Stars, 1989 Ref. Stars, 0 Movers)
+18:48:17 - Astrometry of Image 1 (cpt1m010-fl16-20180307-0140-e11.fits): 
+           2098 of 2098 Reference Stars used: dRA = 0.14", dDe = 0.09"
+           X = +1.193994380E-5 +1.889254186E-6*x' -3.403328505E-8*y'               +3.183640881E-14*x'^2 +8.230964572E-15*x'*y' +4.800090007E-15*y'^2               -1.332601274E-16*x'^3 +2.051658359E-17*x'^2*y' -1.488663905E-16*x'*y'^2 +7.633829304E-18*y'^3
+           Y = -9.279950935E-6 -3.446503184E-8*x' -1.888954956E-6*y'               +2.807191130E-14*x'^2 -2.003011719E-14*x'*y' -3.532678899E-14*y'^2               -2.746155151E-17*x'^3 +1.515286787E-16*x'^2*y' -4.662680330E-19*x'*y'^2 +1.898757739E-16*y'^3
+           Origin: x0 = 2048.0, y0 = 2048.0
+           Center Coordinates: RA = 10h 33m 37.00s, De = -82° 45' 09.9"
+           Focal Length = 7939.0mm, Rotation = -1.05°
+           Pixel Size: 0.39" x 0.39", Field of View: 26.6' x 26.6' 
+18:48:17 - Photometry of Image 1 (cpt1m010-fl16-20180307-0140-e11.fits): 
+           2088 of 2098 Reference Stars used: dmag = 0.05mag
+           Zero Point: 29.306mag
+18:48:17 - Astrometry of Image 2 (cpt1m010-fl16-20180307-0141-e11.fits): 
+           1973 of 1989 Reference Stars used: dRA = 0.12", dDe = 0.09"
+           X = +1.861605096E-6 +1.889285044E-6*x' -3.376370333E-8*y'               +2.664328354E-15*x'^2 +7.277376838E-15*x'*y' +4.932815700E-15*y'^2               -1.356076104E-16*x'^3 -3.237382763E-17*x'^2*y' -1.612285920E-16*x'*y'^2 +7.655554080E-18*y'^3
+           Y = -3.321759502E-6 -3.441700455E-8*x' -1.889091865E-6*y'               +1.734953521E-14*x'^2 -2.075899788E-16*x'*y' -6.370235696E-14*y'^2               -2.264626576E-17*x'^3 +1.771891008E-16*x'^2*y' +2.432610383E-17*x'*y'^2 +2.087199575E-16*y'^3
+           Origin: x0 = 2048.0, y0 = 2048.0
+           Center Coordinates: RA = 10h 33m 38.10s, De = -82° 45' 08.7"
+           Focal Length = 7938.6mm, Rotation = -1.04°
+           Pixel Size: 0.39" x 0.39", Field of View: 26.6' x 26.6' 
+18:48:17 - Photometry of Image 2 (cpt1m010-fl16-20180307-0141-e11.fits): 
+           1980 of 1989 Reference Stars used: dmag = 0.05mag
+           Zero Point: 29.322mag
+18:48:18 - End
+18:49:47 - Position added manually from file cpt1m010-fl16-20180307-0140-e11.fits:
+  10 33 49.242           -82 43 54.22           20.63           1984.92  1854.88    2952   0.7    6.4  0.226
+                 ±0.14                  ±0.10           ±0.11
+     K18E00B  C2018 03 08.08186210 33 49.24 -82 43 54.2          20.6 G      K91
+       K18E0000B1 C2018 03 08.081862    10 33 49.24    -82 43 54.2     20.6  G      C                                           0K91
+       K18E0000B2+C2018 03 08.081862     0.1    0.1             X.1   N  0.000001   1.036????????                               0K91
+18:50:25 - Position added manually from file cpt1m010-fl16-20180307-0141-e11.fits:
+  10 33 50.674           -82 43 53.32           20.89           1983.32  1855.79    2352   0.0    2.2  -.---
+                 ±0.12                  ±0.09           ±0.19
+     K18E00B  C2018 03 08.08583110 33 50.67 -82 43 53.3          20.9 G      K91
+       K18E0000B1 C2018 03 08.085831    10 33 50.67    -82 43 53.3     20.9  G      C                                           0K91
+       K18E0000B2+C2018 03 08.085831     0.1    0.1             X.2   N  0.000001   0.791????????                               0K91

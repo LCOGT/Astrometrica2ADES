@@ -1,0 +1,15 @@
+COD K93
+CON T. Lister, LCO, 6740 Cortona Drive Suite 102, Goleta, CA 93117 [tlister@lco.global]
+OBS T. Lister
+MEA T. Lister
+TEL 1.0-m f/8 Ritchey-Chretien + CCD
+ACK MPCReport file updated 2018.03.07 21:57:38
+AC2 tlister@lco.global
+NET Gaia DR1
+     K18E00B  C2018 03 08.07074310 33 46.23 -82 43 57.5          21.3 G      K93
+     K18E00B  C2018 03 08.07471310 33 47.16 -82 43 56.5          20.7 G      K93
+     K18E00B FC2018 03 08.07869310 33 48.16 -82 43 55.6          21.3 G      K93
+     K18E00B  C2018 03 08.08186210 33 49.24 -82 43 54.2          20.6 G      K91
+     K18E00B FC2018 03 08.08266510 33 49.73 -82 43 54.0          21.1 G      K93
+     K18E00B  C2018 03 08.08583110 33 50.67 -82 43 53.3          20.9 G      K91
+----- end -----

@@ -260,46 +260,6 @@ class Test_ParseBody(object):
 
         assert expected_data == data
 
-class Test_Convert_mpcreport_to_psv:
-
-    def read_file_lines(self, filename):
-        test_fh = open(filename, 'r')
-        test_lines = test_fh.readlines()
-        test_fh.close()
-        return test_lines
-
-    @pytest.fixture(autouse=True)
-    def setup_method(self, tmpdir):
-        self.tmpdir = tmpdir.strpath
-
-        self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
-        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
-
-        test_psv = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.psv'))
-        self.test_psv_lines = self.read_file_lines(test_psv)
-        test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
-        self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
-
-    def test_convert(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile)
-
-        outfile_lines = self.read_file_lines(outfile)
-        assert outfile_lines == self.test_psv_lines
-
-    def test_convert_with_rms(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, outfile, True, self.test_log)
-
-        outfile_lines = self.read_file_lines(outfile)
-        assert outfile_lines == self.test_psv_rms_lines
-
-    def test_missing_file(self):
-        outfile = os.path.join(self.tmpdir, 'out.psv')
-        num_objects = convert_mpcreport_to_psv('foobarbiff', outfile)
-
-        assert -1 == num_objects
-
 class Test_ReadAstrometricaLog(object):
 
     def setup_method(self):
@@ -464,3 +424,59 @@ class Test_DataModify(object):
         data = parse_and_modify_data(line, ast_catalog='Gaia1', display=False)
 
         assert expected_data == data
+
+class Test_Convert_mpcreport_to_psv:
+
+    def read_file_lines(self, filename):
+        test_fh = open(filename, 'r')
+        test_lines = test_fh.readlines()
+        test_fh.close()
+        return test_lines
+
+    @pytest.fixture(autouse=True)
+    def setup_method(self, tmpdir):
+        self.tmpdir = tmpdir.strpath
+
+        self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.txt'))
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica.log'))
+
+        test_psv = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport.psv'))
+        self.test_psv_lines = self.read_file_lines(test_psv)
+        test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
+        self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
+        test_psv_multisite = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_multisite.psv'))
+        self.test_psv_multisite_lines = self.read_file_lines(test_psv_multisite)
+
+        self.outfile = os.path.join(self.tmpdir, 'out.psv')
+
+    def test_convert(self):
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_lines
+
+    def test_convert_with_rms(self):
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_rms_lines
+
+    def test_missing_file(self):
+        num_objects = convert_mpcreport_to_psv('foobarbiff', self.outfile)
+
+        assert -1 == num_objects
+
+    def test_no_asteroids(self):
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica_noasts.log'))
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_lines
+
+    def test_multiple_sites(self):
+        self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_multisite.txt'))
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica_multisite.log'))
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_multisite_lines

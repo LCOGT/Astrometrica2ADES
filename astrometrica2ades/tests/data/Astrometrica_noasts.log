@@ -1,0 +1,44 @@
+18:32:30 - Start 2018/03/07
+           Astrometrica 4.10.0.431
+           Image 1: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0128-e11.fits
+           Time Stamp: 2018 03 08, 1:41:52.2 UT
+           Image 2: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0129-e11.fits
+           Time Stamp: 2018 03 08, 1:47:35.2 UT
+           Image 3: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0130-e11.fits
+           Time Stamp: 2018 03 08, 1:53:19.1 UT
+           Image 4: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0131-e11.fits
+           Time Stamp: 2018 03 08, 1:59:02.3 UT
+           Image 5: Z:\data\tlister\Asteroids\20180307\cpt1m012-fl06-20180307-0132-e11.fits
+           Time Stamp: 2018 03 08, 2:04:45.2 UT
+           Settings for Scale and Orientation:
+             Focal Length = 7942.0mm ± 1.0%, Position Angle = 180.0° ± 1.0°, Pointing = ± 1.0'
+             Image flipped:  horizontally
+           Settings for CCD:
+             Pixel Width = 15.0µm, Pixel Height = 15.0µm, Saturation = 65535
+           Settings for Object Detection:
+             Aperture Radius = 4, Detection Limit = 4.0, Min.FWHM = 2.50, PSF-Fit RMS = 0.40, Search Radius = 1.75
+           Settings for Reference Star Matching:
+             Number of Stars = 50, Search Radius = 5.0, Magnitude = 11.0mag - 22.0mag
+18:33:14 - Gaia DR1: 4422 Records read (28.6' x 28.6')
+           Center Coordinates: RA = 10h 34m 00.70s, De = -82° 43' 54.0"
+18:33:22 - Object List for Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           2755 Detections (2234 Stars, 1982 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 2 (cpt1m012-fl06-20180307-0129-e11.fits): 
+           2672 Detections (2155 Stars, 1931 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 3 (cpt1m012-fl06-20180307-0130-e11.fits): 
+           2422 Detections (1992 Stars, 1804 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 4 (cpt1m012-fl06-20180307-0131-e11.fits): 
+           2668 Detections (2115 Stars, 1904 Ref. Stars, 1 Mover)
+18:33:22 - Object List for Image 5 (cpt1m012-fl06-20180307-0132-e11.fits): 
+           2445 Detections (1932 Stars, 1767 Ref. Stars, 1 Mover)
+18:33:22 - Astrometry of Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           1922 of 1982 Reference Stars used: dRA = 0.13", dDe = 0.09"
+           X = +2.169634922E-5 +1.889030746E-6*x' -3.030523333E-8*y'               -1.505685870E-14*x'^2 +2.745882616E-14*x'*y' -1.446909748E-15*y'^2               -1.632361467E-16*x'^3 -2.939464242E-17*x'^2*y' -1.483493272E-16*x'*y'^2 +1.204286301E-17*y'^3
+           Y = -1.255802852E-5 -3.109098187E-8*x' -1.888732291E-6*y'               +1.456786609E-14*x'^2 +6.165631001E-15*x'*y' -5.130675520E-14*y'^2               -2.385894062E-18*x'^3 +2.041167330E-16*x'^2*y' +1.134606772E-17*x'*y'^2 +1.278781337E-16*y'^3
+           Origin: x0 = 2048.0, y0 = 2048.0
+           Center Coordinates: RA = 10h 33m 58.34s, De = -82° 43' 56.6"
+           Focal Length = 7940.2mm, Rotation = -0.94°
+           Pixel Size: 0.39" x 0.39", Field of View: 26.6' x 26.6' 
+18:33:22 - Photometry of Image 1 (cpt1m012-fl06-20180307-0128-e11.fits): 
+           1973 of 1982 Reference Stars used: dmag = 0.07mag
+           Zero Point: 29.262mag
