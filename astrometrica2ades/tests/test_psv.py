@@ -444,6 +444,8 @@ class Test_Convert_mpcreport_to_psv:
         self.test_psv_lines = self.read_file_lines(test_psv)
         test_psv_rms = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_rms.psv'))
         self.test_psv_rms_lines = self.read_file_lines(test_psv_rms)
+        test_psv_multisite = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_multisite.psv'))
+        self.test_psv_multisite_lines = self.read_file_lines(test_psv_multisite)
 
         self.outfile = os.path.join(self.tmpdir, 'out.psv')
 
@@ -470,3 +472,11 @@ class Test_Convert_mpcreport_to_psv:
 
         outfile_lines = self.read_file_lines(self.outfile)
         assert outfile_lines == self.test_psv_lines
+
+    def test_multiple_sites(self):
+        self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_multisite.txt'))
+        self.test_log = pkg_resources.resource_filename(__package__, os.path.join('data', 'Astrometrica_multisite.log'))
+        num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
+
+        outfile_lines = self.read_file_lines(self.outfile)
+        assert outfile_lines == self.test_psv_multisite_lines

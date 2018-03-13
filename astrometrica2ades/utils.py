@@ -651,8 +651,16 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
 
     out_fh = open(outFile, 'w')
 
-    # Write obsContext out
+    # Parse header, extra site code
     psv_header = parse_header(header)
+
+    site_code_regex = re.compile('mpcCode (\w{3})')
+    m = site_code_regex.search(psv_header)
+    site_code = '   '
+    if m:
+        site_code = m.group(1)
+
+    # Write obsContext out
     if rms_available:
         if version != '':
             psv_header += ("# software" + "\n"
@@ -682,23 +690,27 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     ast_catalog = map_NET_to_catalog(header)
     # Parse and write out obsData records
     num_objects = 0
+    num_bad_objects = 0
     for line in body:
         data = parse_and_modify_data(line, ast_catalog, asteroids, rms_available, seeing, display)
 
         if data != {}:
-            if rms_available:
-
-                tbl_data = rms_tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
-                    data['prog'], data['obsTime'], data['ra'], data['dec'], data['rmsRA'], data['rmsDec'],\
-                    data['astCat'], data['mag'], data['rmsMag'], data['band'], \
-                    data['photCat'], data['photAp'], data['logSNR'], data['seeing'], \
-                    data['notes'], data['remarks'])
+            if data['stn'] == site_code:
+                if rms_available:
+                    tbl_data = rms_tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
+                        data['prog'], data['obsTime'], data['ra'], data['dec'], data['rmsRA'], data['rmsDec'],\
+                        data['astCat'], data['mag'], data['rmsMag'], data['band'], \
+                        data['photCat'], data['photAp'], data['logSNR'], data['seeing'], \
+                        data['notes'], data['remarks'])
+                else:
+                    tbl_data = tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
+                        data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
+                        data['mag'], data['band'], data['photCat'], data['notes'], data['remarks'])
+                print(tbl_data, file=out_fh)
+                num_objects += 1
             else:
-                tbl_data = tbl_fmt % (data['permID'], data['provID'], data['trkSub'], data['mode'], data['stn'], \
-                    data['prog'], data['obsTime'], data['ra'], data['dec'], data['astCat'],\
-                    data['mag'], data['band'], data['photCat'], data['notes'], data['remarks'])
-            print(tbl_data, file=out_fh)
-            num_objects += 1
+                print("Measurement from different site code (%3s) found, skipping" % data['stn'])
+                num_bad_objects += 1
     out_fh.close()
 
     return num_objects
