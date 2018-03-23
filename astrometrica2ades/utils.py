@@ -424,12 +424,15 @@ def read_astrometrica_logfile(log, dbg=False):
                 line4 = log_fh.readline()
                 if not line4: break
                 if dbg: print(line4)
-                data = parse_dataline(line4.rstrip())
-                asteroid['totalid'] = data['totalid']
-                asteroid['obsTime'] = data['obsTime']
-                if asteroid not in asteroids:
-                    asteroids.append(asteroid)
-                if dbg: print(asteroid)
+                try:
+                    data = parse_dataline(line4.rstrip())
+                    asteroid['totalid'] = data['totalid']
+                    asteroid['obsTime'] = data['obsTime']
+                    if asteroid not in asteroids:
+                        asteroids.append(asteroid)
+                    if dbg: print(asteroid)
+                except RuntimeError:
+                    print("Error parsing line: ", line4)
                 # Read AstDys .rwo format lines
                 junk = log_fh.readline()
                 junk = log_fh.readline()
