@@ -12,28 +12,28 @@ class Test_checkSexagesimal(object):
         line = "12"
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_no_minutes2(self):
 
         line = "12 "
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_no_minutes3(self):
 
         line = "12.1"
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_no_minutes4(self):
 
         line = "12.1 "
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_minutes1(self):
 
@@ -58,7 +58,7 @@ class Test_checkSexagesimal(object):
         line = "12 13. "
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_seconds1(self):
 
@@ -110,21 +110,21 @@ class Test_checkSexagesimal(object):
         line = "12 13 14x5"
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_bad_seconds2(self):
 
         line = "12 13 14.56 x"
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
     def test_bad_seconds3(self):
 
         line = " 13 13 14.56  "
         with pytest.raises(RuntimeError) as e_info:
             data = checkSexagesimal(line)
-        assert self.expected_message + line == e_info.value.message
+        assert self.expected_message + line == str(e_info.value)
 
 #checkSexagesimal("12 13.12 ") #bad - only tenths digid
 
@@ -140,161 +140,161 @@ class Test_checkDate(object):
         rdict = { 'date' : "1800 00 01.333  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_day1(self):
 
         rdict = { 'date' : "1800 01 00.333  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_day2(self):
 
         rdict = { 'date' : "1800 01 01    " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_day3(self):
 
         rdict = { 'date' : "1800 01 01.   " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_day4(self):
 
         rdict = { 'date' : "1800 01 01.3  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date']) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date']) == str(e_info.value)
 
     def test_bad_day5(self):
 
         rdict = { 'date' : "1800 01 01.33  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date']) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date']) == str(e_info.value)
 
     def test_bad_day6(self):
 
         rdict = { 'date' : "1800 01 01.333  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date']) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date']) == str(e_info.value)
 
     def test_bad_day7(self):
 
         rdict = { 'date' : "1800 01 01.33333  " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day8(self):
 
         rdict = { 'date' : "1800 01 01.333333 " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9(self):
 
         rdict = { 'date' : "1800 01 01.3333333 " }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-2]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-2]) == str(e_info.value)
 
     def test_bad_day9a(self):
 
         rdict = { 'date' : "1800 01 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9b(self):
 
         rdict = { 'date' : "1920 01 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9c(self):
 
         rdict = { 'date' : "1920 09 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9d(self):
 
         rdict = { 'date' : "1920 10 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9e(self):
 
         rdict = { 'date' : "1920 11 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day9f(self):
 
         rdict = { 'date' : "1920 12 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == e_info.value.message
+        assert self.expected_message2 % (rdict['date'], rdict['date'][:-1]) == str(e_info.value)
 
     def test_bad_day10(self):
 
         rdict = { 'date' : "2101 03 32.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_day11(self):
 
         rdict = { 'date' : "2101 02 30.333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message3 + rdict['date'] == e_info.value.message
+        assert self.expected_message3 + rdict['date'] == str(e_info.value)
 
     def test_bad_day12(self):
 
         rdict = { 'date' : "2019 02 29.333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message3 + rdict['date'] == e_info.value.message
+        assert self.expected_message3 + rdict['date'] == str(e_info.value)
 
     def test_bad_day13(self):
 
         rdict = { 'date' : "1900 02 29.333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message3 + rdict['date'] == e_info.value.message
+        assert self.expected_message3 + rdict['date'] == str(e_info.value)
 
     def test_bad_month1(self):
 
         rdict = { 'date' : "1920 1030 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_month2(self):
 
         rdict = { 'date' : "1920 102 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
     def test_bad_month3(self):
 
         rdict = { 'date' : "1920 13 01.3333333" }
         with pytest.raises(RuntimeError) as e_info:
             data = checkDate(rdict)
-        assert self.expected_message + rdict['date'] == e_info.value.message
+        assert self.expected_message + rdict['date'] == str(e_info.value)
 
 
     def test_good_day1(self):
