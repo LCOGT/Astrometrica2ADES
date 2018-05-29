@@ -198,7 +198,7 @@ class Test_ParseBody(object):
 
         with pytest.raises(RuntimeError) as e_info:
             data = parse_dataline(data_line)
-        assert expected_message == e_info.value.message
+        assert expected_message == str(e_info.value)
 
     def test_line_not_a_line(self):
 
@@ -215,7 +215,7 @@ class Test_ParseBody(object):
 
         with pytest.raises(RuntimeError) as e_info:
             data = parse_dataline(data_line)
-        assert expected_message == e_info.value.message
+        assert expected_message == str(e_info.value)
 
     def test_line_invalid_note(self):
 
@@ -224,7 +224,7 @@ class Test_ParseBody(object):
 
         with pytest.raises(RuntimeError) as e_info:
             data = parse_dataline(data_line)
-        assert expected_message == e_info.value.message
+        assert expected_message == str(e_info.value)
 
     def test_unnumbered(self):
         expected_data = {u'astCat': ' ',
