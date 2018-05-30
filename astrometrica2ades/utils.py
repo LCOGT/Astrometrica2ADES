@@ -499,13 +499,13 @@ def find_astrometrica_log(mpcreport):
     if mpcreport is None:
         return log
 
-    path = os.path.dirname(mpcreport)
+    path = os.path.abspath(os.path.dirname(mpcreport))
     log = os.path.join(path, 'Astrometrica.log')
     try:
         with open(log) as fh:
             line = fh.readline()
     except IOError:
-        print("Could not matching Astrometrica.log to %s in %s" % (os.path.basename(mpcreport), path))
+        print("Could not find matching Astrometrica.log to %s in %s" % (os.path.basename(mpcreport), path))
         log = None
 
     return log
