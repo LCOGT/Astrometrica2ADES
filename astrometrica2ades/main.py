@@ -1,33 +1,42 @@
 from __future__ import absolute_import
 import os
 import sys
+import argparse
+
 from astrometrica2ades import utils
 
 def parse_args(args):
 
+    parser = argparse.ArgumentParser(description='Convert Astrometrica output to ADES PSV format',
+                                     usage='%(prog)s [--sitecode] <MPCReport file> [output PSV file]')
+    parser.add_argument('mpcreport', help='Path to MPCReport.txt file')
+    parser.add_argument('outFile', nargs='?', help='Output file')
+    parser.add_argument('--sitecode', help='Sitecode to process if different from that in MPCReport.txt')
+
+    options = parser.parse_args(args)
+
     mpcreport = ''
     outFile = ''
-    if len(args) == 2:
-        mpcreport = args[1]
+
+    if options.outFile is None:
+        mpcreport = options.mpcreport
         outFileName = os.path.basename(mpcreport)
         if '.txt' in outFileName:
             outFileName = outFileName.replace('.txt', '.psv')
         else:
             outFileName += '.psv'
         outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
-    elif len(args) == 3:
-        mpcreport = args[1]
-        outFile = args[2]
     else:
-        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(args[0])))
-        sys.exit()
+        mpcreport = options.mpcreport
+        outFile = options.outFile
+
     return mpcreport, outFile
 
 def convert():
 
     rms_available = False
 
-    mpcreport, outFile = parse_args(sys.argv)
+    mpcreport, outFile = parse_args(sys.argv[1:])
 
     log_string = ''
     astrometrica_log = utils.find_astrometrica_log(mpcreport)
