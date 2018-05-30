@@ -3,24 +3,31 @@ import os
 import sys
 from astrometrica2ades import utils
 
-def convert():
+def parse_args(args):
 
-    rms_available = False
-
-    if len(sys.argv) == 2:
-        mpcreport = sys.argv[1]
+    mpcreport = ''
+    outFile = ''
+    if len(args) == 2:
+        mpcreport = args[1]
         outFileName = os.path.basename(mpcreport)
         if '.txt' in outFileName:
             outFileName = outFileName.replace('.txt', '.psv')
         else:
             outFileName += '.psv'
         outFile = os.path.join(os.path.dirname(mpcreport), outFileName)
-    elif len(sys.argv) == 3:
-        mpcreport = sys.argv[1]
-        outFile = sys.argv[2]
+    elif len(args) == 3:
+        mpcreport = args[1]
+        outFile = args[2]
     else:
-        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(sys.argv[0])))
-        exit()
+        print("Usage: %s <MPCReport file> [output PSV file]" % (os.path.basename(args[0])))
+        sys.exit()
+    return mpcreport, outFile
+
+def convert():
+
+    rms_available = False
+
+    mpcreport, outFile = parse_args(sys.argv)
 
     log_string = ''
     astrometrica_log = utils.find_astrometrica_log(mpcreport)
