@@ -313,7 +313,17 @@ def read_astrometrica_logfile(log, dbg=False):
         SNR and FWHM of asteroid measured by Astrometrica.
     """
 
-    log_fh = open(log, 'r', encoding="cp1252")
+    images = []
+    asteroids = []
+    version = ''
+
+    try:
+        log_fh = open(log, 'r', encoding="cp1252")
+    except TypeError:
+        log_fh = open(log, 'r')
+    except IOError:
+        print("Could not open", log)
+        return version, images, asteroids
 
     images_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - Astrometry of Image \d* \(' + r'(.*)\):')
     photom_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - Photometry of Image \d* \(' + r'(.*)\):')
@@ -325,11 +335,9 @@ def read_astrometrica_logfile(log, dbg=False):
     apradius_regex = re.compile(r'^\s*Aperture Radius\s*=\s*(\d)')
     mov_end_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - \w+\W+')
 
-    images = []
-    asteroids = []
     avg_pix_size = None
     ap_radius_pix = None
-    version = ''
+
     while True:
         line = log_fh.readline()
         i = images_regex.match(line)
@@ -362,11 +370,14 @@ def read_astrometrica_logfile(log, dbg=False):
                     # Image is not in list, add details
                     images.append((image , rms))
             line_count = 0
-            while line_count < 6:
+            line2 = 'DivisionByCucumber'
+            while 'Pixel Size' not in line2 and line_count < 10:
                 line2 = log_fh.readline()
+                if hasattr(line2, 'decode'):
+                    line2 = line2.decode('cp1252')
                 if not line2: break
                 line_count += 1
-            pix_size_regex = re.compile('([.0-9]+)\"')
+            pix_size_regex = re.compile(r'([.0-9]+)\"')
             pix_size = pix_size_regex.findall(line2)
             if dbg: print(pix_size)
             if len(pix_size) == 2:
@@ -502,8 +513,12 @@ def find_astrometrica_log(mpcreport):
     path = os.path.abspath(os.path.dirname(mpcreport))
     log = os.path.join(path, 'Astrometrica.log')
     try:
-        with open(log, encoding="cp1252", errors="surrogateescape") as fh:
-            line = fh.readline()
+        try:
+            with open(log, encoding="cp1252", errors="surrogateescape") as fh:
+                line = fh.readline()
+        except TypeError:
+            with open(log) as fh:
+                line = fh.readline()
     except IOError:
         print("Could not find matching Astrometrica.log to %s in %s" % (os.path.basename(mpcreport), path))
         log = None
@@ -596,7 +611,7 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
                     data['logSNR'] = '    '
                 try:
                     photAp = float(asteroid.get('photAp', ''))
-                    data['photAp'] = "%6.4f" % photAp
+                    data['photAp'] = "%6.2f" % photAp
                 except ValueError:
                     data['photAp'] = '    '
                 if asteroid['fwhm'] != '0.0':
