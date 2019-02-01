@@ -193,7 +193,7 @@ def parse_dataline(line):
                         #+ '( AaBbcDdEFfGgGgHhIiJKkMmNOoPpRrSsTtUuVWwYyCQX2345vzjeL16789])' # notes group 14
                         + '(.)'                 # notes can be anything
                        )
-    commonRegexHelp2 = ('(\d{4})'            # yyyy from obsDate 16-19
+    commonRegexHelp2 = (r'(\d{4})'            # yyyy from obsDate 16-19
                         + '([ a-e])'            # asteroid satellite embedded in date 20
                         + '([0-9 .]{12})'       # rest of obsDate loosely checked 21-32
                        )
@@ -313,17 +313,17 @@ def read_astrometrica_logfile(log, dbg=False):
         SNR and FWHM of asteroid measured by Astrometrica.
     """
 
-    log_fh = open(log, 'r')
+    log_fh = open(log, 'r', encoding="cp1252")
 
-    images_regex = re.compile('^\d{2}:\d{2}:\d{2} - Astrometry of Image \d* \(' + '(.*)\):')
-    photom_regex = re.compile('^\d{2}:\d{2}:\d{2} - Photometry of Image \d* \(' + '(.*)\):')
-    version_regex = re.compile('^\s*(Astrometrica .*[^\r\n]+)')
-    astrom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
-    photom_rms_regex = re.compile('(\d+)[^=]+=\s*([.0-9]+)[^=]+')
-    pos_regex = re.compile('^\d{2}:\d{2}:\d{2} - (Position|Moving)')
-    pos_rms_regex = re.compile('([.0-9]+)')
-    apradius_regex = re.compile('^\s*Aperture Radius\s*=\s*(\d)')
-    mov_end_regex = re.compile('^\d{2}:\d{2}:\d{2} - \w+\W+')
+    images_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - Astrometry of Image \d* \(' + r'(.*)\):')
+    photom_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - Photometry of Image \d* \(' + r'(.*)\):')
+    version_regex = re.compile(r'^\s*(Astrometrica .*[^\r\n]+)')
+    astrom_rms_regex = re.compile(r'(\d+)[^=]+=\s*([.0-9]+)\"[^=]+=\s*([.0-9]+)\"')
+    photom_rms_regex = re.compile(r'(\d+)[^=]+=\s*([.0-9]+)[^=]+')
+    pos_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - (Position|Moving)')
+    pos_rms_regex = re.compile(r'([.0-9]+)')
+    apradius_regex = re.compile(r'^\s*Aperture Radius\s*=\s*(\d)')
+    mov_end_regex = re.compile(r'^\d{2}:\d{2}:\d{2} - \w+\W+')
 
     images = []
     asteroids = []
@@ -502,7 +502,7 @@ def find_astrometrica_log(mpcreport):
     path = os.path.abspath(os.path.dirname(mpcreport))
     log = os.path.join(path, 'Astrometrica.log')
     try:
-        with open(log) as fh:
+        with open(log, encoding="cp1252", errors="surrogateescape") as fh:
             line = fh.readline()
     except IOError:
         print("Could not find matching Astrometrica.log to %s in %s" % (os.path.basename(mpcreport), path))
@@ -588,12 +588,17 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
             if len(asteroid) > 0:
                 asteroid = asteroid[0]
                 for field in ['rmsRA', 'rmsDec', 'rmsMag', 'photAp']:
-                    data[field] = asteroid[field]
+                    data[field] = asteroid.get(field, None)
                 try:
                     logSNR = log10(float(asteroid['snr']))
                     data['logSNR'] = "%6.4f" % logSNR
                 except ValueError:
                     data['logSNR'] = '    '
+                try:
+                    photAp = float(asteroid.get('photAp', ''))
+                    data['photAp'] = "%6.4f" % photAp
+                except ValueError:
+                    data['photAp'] = '    '
                 if asteroid['fwhm'] != '0.0':
                     data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
                 else:
@@ -639,7 +644,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
 
     if rms_available and astrometrica_log is not None:
         version, images, asteroids = read_astrometrica_logfile(astrometrica_log)
-        seeing = None
+        seeing = -99
         if len(asteroids) == 0:
             print("Read no asteroid data from %s" % astrometrica_log)
             rms_available = False
@@ -657,7 +662,7 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     # Parse header, extra site code
     psv_header = parse_header(header)
 
-    site_code_regex = re.compile('mpcCode (\w{3})')
+    site_code_regex = re.compile(r'mpcCode (\w{3})')
     m = site_code_regex.search(psv_header)
     site_code = '   '
     if m:
