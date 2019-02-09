@@ -459,7 +459,8 @@ class Test_Convert_mpcreport_to_psv:
         num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
 
         outfile_lines = self.read_file_lines(self.outfile)
-        assert outfile_lines == self.test_psv_rms_lines
+        for (in_line, out_line) in zip(self.test_psv_rms_lines, outfile_lines):
+            assert out_line == in_line
 
     def test_missing_file(self):
         num_objects = convert_mpcreport_to_psv('foobarbiff', self.outfile)
@@ -471,7 +472,8 @@ class Test_Convert_mpcreport_to_psv:
         num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
 
         outfile_lines = self.read_file_lines(self.outfile)
-        assert outfile_lines == self.test_psv_lines
+        for (in_line, out_line) in zip(self.test_psv_lines, outfile_lines):
+            assert out_line == in_line
 
     def test_multiple_sites(self):
         self.test_mpcreport = pkg_resources.resource_filename(__package__, os.path.join('data', 'MPCReport_multisite.txt'))
@@ -479,4 +481,5 @@ class Test_Convert_mpcreport_to_psv:
         num_objects = convert_mpcreport_to_psv(self.test_mpcreport, self.outfile, True, self.test_log, display=False)
 
         outfile_lines = self.read_file_lines(self.outfile)
-        assert outfile_lines == self.test_psv_multisite_lines
+        for (in_line, out_line) in zip(self.test_psv_multisite_lines, outfile_lines):
+            assert out_line == in_line

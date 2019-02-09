@@ -17,7 +17,7 @@
 ! photometry Astrometrica 4.10.0.431
 ! objectDetection Astrometrica 4.10.0.431
 # comment
-! line Converted to PSV with astrometrica2ades V0.0.5
+! line Converted to PSV with astrometrica2ades V0.0.6
  permID|provID     |  trkSub|mode|stn |prog|obsTime                |         ra|        dec|rmsRA|rmsDec|  astCat|  mag|rmsMag|band| photCat|photAp|logSNR|seeing|notes|remarks
        |2018 EB    |        | CCD|K93 |    |2018-03-08T01:41:52.20Z|  158.44263|  -82.73264| 0.14|  0.10|   Gaia1|21.3 |  0.14|   G|   Gaia1|  1.56|0.7482|0.4000|     |
        |2018 EB    |        | CCD|K93 |    |2018-03-08T01:47:35.20Z|  158.44650|  -82.73236| 0.13|  0.09|   Gaia1|20.7 |  0.10|   G|   Gaia1|  1.56|0.7076|0.3000|     |
