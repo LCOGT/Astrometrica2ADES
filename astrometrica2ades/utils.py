@@ -19,7 +19,7 @@ global _converter_version
 version = pkg_resources.require("astrometrica2ades")[0].version
 _converter_version = "astrometrica2ades V" + version
 
-def parse_header(header_lines):
+def parse_header(header_lines, add_collaborators=False):
 
     version_string = "# version=2017"
     site_code = ''
@@ -50,6 +50,35 @@ def parse_header(header_lines):
         header += measurers
     if telescope != '':
         header += telescope
+    if add_collaborators:
+        collaborators = "M. T. Bannister,\
+                        J. Bauer,\
+                        D. Bodewits,\
+                        J. Chatelain,\
+                        E. Fernandez-Valenzuela,\
+                        G. Gyuk,\
+                        M. Hammergren,\
+                        M.-T. Hui,\
+                        H. Hsieh,\
+                        E. Jehin,\
+                        M. S. P. Kelley,\
+                        M. Knight,\
+                        R. Kokotanekova,\
+                        E. Lilly,\
+                        T. Lister,\
+                        A. McKay,\
+                        C. Opitom,\
+                        C. Schambeau,\
+                        M. Schwamb,\
+                        C. Snodgrass,\
+                        K. Wierzchos,\
+                        P. A. Yanamandra-Fisher,\
+                        Q. Ye"
+        cois = collaborators.split(',')
+        if len(cois) >= 1:
+            header += '# coinvestigators\n'
+            for coi in cois:
+                header += "! name " + coi.strip() + "\n"
     return header
 
 def parse_obscode(code_line):
@@ -627,7 +656,7 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
             pass
     return data
 
-def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None, display=True):
+def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometrica_log=None, display=True, **options):
     """
     Convert an Astrometrica-produced MPCReport.txt file in MPC1992 80 column
     format to ADES PSV format.
@@ -674,8 +703,8 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
 
     out_fh = open(outFile, 'w')
 
-    # Parse header, extra site code
-    psv_header = parse_header(header)
+    # Parse header, extract site code
+    psv_header = parse_header(header, add_collaborators=options.get('look', False))
 
     site_code_regex = re.compile(r'mpcCode (\w{3})')
     m = site_code_regex.search(psv_header)
@@ -697,10 +726,10 @@ def convert_mpcreport_to_psv(mpcreport, outFile, rms_available=False, astrometri
     print(psv_header.rstrip(), file=out_fh)
 
     # Define and write obsData header
-    tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%8s|%5s|%6s|%8s|%-5s|%-s'
+    tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%12s|%12s|%8s|%5s|%6s|%8s|%-5s|%-s'
     tbl_hdr = tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
         'ra', 'dec', 'astCat', 'mag', 'band', 'photCat', 'notes', 'remarks')
-    rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%11s|%11s|%5s|%6s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%-5s|%-s'
+    rms_tbl_fmt = '%7s|%-11s|%8s|%4s|%-4s|%4s|%-23s|%12s|%12s|%5s|%6s|%8s|%5s|%6s|%4s|%8s|%6s|%6s|%6s|%-5s|%-s'
     rms_tbl_hdr = rms_tbl_fmt % ('permID', 'provID', 'trkSub', 'mode', 'stn', 'prog', 'obsTime', \
         'ra', 'dec', 'rmsRA', 'rmsDec', 'astCat', 'mag', 'rmsMag', 'band', 'photCat', \
         'photAp', 'logSNR', 'seeing', 'notes', 'remarks')

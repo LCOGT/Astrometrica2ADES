@@ -12,6 +12,7 @@ def parse_args(args):
     parser.add_argument('mpcreport', help='Path to MPCReport.txt file')
     parser.add_argument('outFile', nargs='?', help='Output file')
     parser.add_argument('--sitecode', help='Sitecode to process if different from that in MPCReport.txt')
+    parser.add_argument('--look', action='store_true', help='Add in LOOK Project collaborators')
 
     options = parser.parse_args(args)
 
@@ -30,13 +31,16 @@ def parse_args(args):
         mpcreport = options.mpcreport
         outFile = options.outFile
 
-    return mpcreport, outFile
+    options_dict = vars(options)
+    del(options_dict['mpcreport'])
+    del(options_dict['outFile'])
+    return mpcreport, outFile, options_dict
 
 def convert():
 
     rms_available = False
 
-    mpcreport, outFile = parse_args(sys.argv[1:])
+    mpcreport, outFile, options = parse_args(sys.argv[1:])
 
     log_string = ''
     astrometrica_log = utils.find_astrometrica_log(mpcreport)
@@ -44,7 +48,7 @@ def convert():
         rms_available = True
         log_string = ' and ' + astrometrica_log
     print("Reading from: %s%s, writing to: %s" % (mpcreport, log_string, outFile))
-    num_objects = utils.convert_mpcreport_to_psv(mpcreport, outFile, rms_available, astrometrica_log)
+    num_objects = utils.convert_mpcreport_to_psv(mpcreport, outFile, rms_available, astrometrica_log, **options)
     if num_objects > 0:
         print("Wrote %d objects to %s" % (num_objects, outFile))
     else:
