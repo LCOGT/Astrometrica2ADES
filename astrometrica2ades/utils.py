@@ -55,11 +55,14 @@ def parse_header(header_lines, add_collaborators=False):
                         J. Bauer,\
                         D. Bodewits,\
                         J. Chatelain,\
+                        M. Vander Donckt,\
+                        M. Dobson,\
                         E. Fernandez-Valenzuela,\
                         G. Gyuk,\
                         M. Hammergren,\
-                        M.-T. Hui,\
+                        C. Holt,\
                         H. Hsieh,\
+                        M.-T. Hui,\
                         E. Jehin,\
                         M. S. P. Kelley,\
                         M. Knight,\
@@ -67,10 +70,15 @@ def parse_header(header_lines, add_collaborators=False):
                         E. Lilly,\
                         T. Lister,\
                         A. McKay,\
+                        Y. Moulane,\
                         C. Opitom,\
+                        S. Protopapa,\
+                        R. Ridden-Harper,\
                         C. Schambeau,\
                         M. Schwamb,\
                         C. Snodgrass,\
+                        C. Stoddard-Jones,\
+                        H. Usher,\
                         K. Wierzchos,\
                         P. A. Yanamandra-Fisher,\
                         Q. Ye"
