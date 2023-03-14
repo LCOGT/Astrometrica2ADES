@@ -93,11 +93,19 @@ set([ "010",
       "I11",
       "I89",
       "J13",
+      "K91",
+      "K92",
+      "K93",
       "N50",
       "Q62",
       "U69",
       "V07",
+      "V37",
+      "V39",
       "W84",
+      "W85",
+      "W86",
+      "W87",
       "W88",
       "Z18",
       "Z19",
@@ -105,6 +113,15 @@ set([ "010",
       "249",
       "C49",
       "C50 ", ])
+
+programCodemapping = {
+    'E10' : ('0', 'T. Lister'),
+    'F65' : ('%', 'T. Lister'),
+    'K92' : ('2', 'T. Lister'),
+    'V39' : ('3', 'T. Lister'),
+    'W85' : ('4', 'T. Lister'),
+    'W86' : ('2', 'T. Lister'),
+}
 
 catCodes = { ' ': 'UNK',
              'a': 'USNOA1',
@@ -203,8 +220,8 @@ cometfragmentProvIDRegex = re.compile('^([CDPX])/(\d{4}) ([A-Z])(\d*)-([A-Z])$')
 satelliteProvIDRegex = re.compile('^S/(\d{4}) ([JSUN]) (\d+)$')
 
 minorplanetPermIDRegex = re.compile('^(\d+)$')
-cometPermIDRegex = re.compile('^(\d+)([PD])$')
-cometfragmentPermIDRegex = re.compile('^(\d+)([PD])-([A-Z]{1,2})$')
+cometPermIDRegex = re.compile('^(\d+)([PDI])$') # add I for interstellar objects
+cometfragmentPermIDRegex = re.compile('^(\d+)([PDI])-([A-Z]{1,2})$') # likely this will happen for interstellar objects
 satellitePermIDRegex = re.compile('^(Jupiter|Saturn|Uranus|Neptune) (\d+)$')
 asteroidsatellitePermIDRegex = re.compile('^\((\d+|\d{4} [A-Z]{2}\d+)\) (\d+)$')
 
@@ -280,7 +297,9 @@ minorplanetPackedIDRegex = re.compile('^(?: {5}|([0-9A-Za-z])(\d{4}))'+
 #   10: a-z; comet fragment first letter or blank
 #   11: a-z; comet fragment 
 #
-cometPackedIDRegex = re.compile('^(?: {4}|(\d{4}))([APCDX])'  
+# Add "I" for interstellar objects
+#
+cometPackedIDRegex = re.compile('^(?: {4}|(\d{4}))([APCDXI])'
                                   + '(?:' + '([0-9A-Za-z])(\d{2})([A-HJ-Y])([a-zA-Z0-9])(\d)(?:0|([A-Z])|([a-z]))' + '|'
                                           + '     ([a-z ])([a-z])'  + '|'
                                           + ' *$'
@@ -332,13 +351,11 @@ _initpackLetters()
         
 
 def unpackPackedID(packedID):
-   """
-   unpackePackedID unpacks an MPC 80-column ID
-
-   Input:
-      packedID: The 12-character packed ID
-   Output:
-      (permID, provID, trkSub)
+   """ unpackePackedID unpacks an MPC 80-column ID
+       Input:
+          packedID: The 12-character packed ID
+       Output:
+          (permID, provID, trkSub)
    """
    permID = None
    provID = None
@@ -400,7 +417,7 @@ def unpackPackedID(packedID):
         if (n == 0):
            raise RuntimeError("Can't unpack because comet number for " 
                                + packedID + " is zero")
-        if (cometType != 'P' and cometType != 'D'):
+        if (cometType != 'P' and cometType != 'D' and cometType != 'I'):
            raise RuntimeError("Can't unpack because comet type for " 
                                + packedID + " must be P or D")
         permID = str(n) + cometType

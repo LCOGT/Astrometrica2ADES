@@ -300,6 +300,13 @@ def parse_dataline(line):
 
     # No mapping of program codes yet
     ret['prog'] = '  '
+    if ret['stn'] in packUtil.programCodeSites:
+        progcode = packUtil.programCodemapping.get(ret['stn'], None)
+        if progcode:
+            if progcode[0].isdigit():
+                ret['prog'] = '0' + progcode[0]
+            else:
+                ret['prog'] = ' ' + progcode[0]
     if ret['notes'] not in packUtil.validNotes:
         error80("invalid note "+ ret['notes'] +" in line ", line)
 
