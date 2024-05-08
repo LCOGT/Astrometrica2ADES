@@ -140,13 +140,15 @@ def parse_telescope(code_line):
     if len(tel_chunks) == 2:
         design = tel_chunks[1]
         f_ratio = ''
-    elif len(tel_chunks) == 3:
+    elif len(tel_chunks) >= 3:
         try:
             f_ratio = tel_chunks[1].replace('f/', '')
             f_ratio = "%.1f" % float(f_ratio)
         except ValueError:
             f_ratio = ''
-        design = tel_chunks[2]
+        design = " ".join(tel_chunks[2:])
+    else:
+        error80("Couldn't parse TEL line")
 
     telescope = ("# telescope" + "\n"
                  "! aperture " + aperture + "\n"
