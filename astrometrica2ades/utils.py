@@ -298,15 +298,8 @@ def parse_dataline(line):
     else:
         ret['mode'] = packUtil.codeDict[ret['code']]
 
-    # No mapping of program codes yet
+    # No mapping of program codes yet (not supposed to be in submissions anyway...?)
     ret['prog'] = '  '
-    if ret['stn'] in packUtil.programCodeSites:
-        progcode = packUtil.programCodemapping.get(ret['stn'], None)
-        if progcode:
-            if progcode[0].isdigit():
-                ret['prog'] = '0' + progcode[0]
-            else:
-                ret['prog'] = ' ' + progcode[0]
     if ret['notes'] not in packUtil.validNotes:
         error80("invalid note "+ ret['notes'] +" in line ", line)
 
