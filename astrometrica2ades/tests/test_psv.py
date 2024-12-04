@@ -22,7 +22,7 @@ class Test_ParseHeader(object):
 
     def test_COD_header(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# observatory" + "\n"
                            "! mpcCode G96" + "\n"
                            "! name Catalina Sky Survey" + "\n"
@@ -36,7 +36,7 @@ class Test_ParseHeader(object):
 
     def test_COD_header_no_name(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# observatory" + "\n"
                            "! mpcCode G99" + "\n"
                            )
@@ -49,7 +49,7 @@ class Test_ParseHeader(object):
 
     def test_OBS_header(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# observers" + "\n"
                            "! name R. L. Seaman" + "\n"
                            )
@@ -62,7 +62,7 @@ class Test_ParseHeader(object):
 
     def test_OBS_header_multi_observers(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# observers" + "\n"
                            "! name R. L. Seaman" + "\n"
                            "! name E. J. Christensen" + "\n"
@@ -79,7 +79,7 @@ class Test_ParseHeader(object):
 
     def test_MEA_header(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# submitter" + "\n"
                            "! name R. L. Seaman" + "\n"
                            "# measurers" + "\n"
@@ -94,7 +94,7 @@ class Test_ParseHeader(object):
 
     def test_MEA_header_multi_observers(self):
 
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# submitter" + "\n"
                            "! name R. L. Seaman" + "\n"
                            "# measurers" + "\n"
@@ -112,7 +112,7 @@ class Test_ParseHeader(object):
         assert expected_header == header
 
     def test_TEL_header(self):
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# telescope" + "\n"
                            "! aperture 1.5" + "\n"
                            "! design reflector" + "\n"
@@ -126,7 +126,7 @@ class Test_ParseHeader(object):
         assert expected_header == header
 
     def test_TEL_header_fRatio(self):
-        expected_header = ("# version=2017" + "\n"
+        expected_header = ("# version=2022" + "\n"
                            "# telescope" + "\n"
                            "! aperture 1.5" + "\n"
                            "! design reflector" + "\n"
@@ -141,7 +141,7 @@ class Test_ParseHeader(object):
         assert expected_header == header
 
     def test_full_header(self):
-        expected_header = ( "# version=2017" + "\n"
+        expected_header = ( "# version=2022" + "\n"
                             "# observatory" + "\n"
                             "! mpcCode W85" + "\n"
                             "# submitter" + "\n"
@@ -162,7 +162,7 @@ class Test_ParseHeader(object):
         assert expected_header == header
 
     def test_submitter_from_config(self):
-        expected_header = ( "# version=2017" + "\n"
+        expected_header = ( "# version=2022" + "\n"
                             "# observatory" + "\n"
                             "! mpcCode Z99" + "\n"
                             "# submitter" + "\n"

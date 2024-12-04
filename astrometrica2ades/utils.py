@@ -21,7 +21,7 @@ _converter_version = "astrometrica2ades V" + version
 
 def parse_header(header_lines, add_collaborators=False):
 
-    version_string = "# version=2017"
+    version_string = "# version=2022"
     site_code = ''
     observatory = observers = measurers = telescope = ''
 
@@ -645,7 +645,7 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
                     data[field] = asteroid.get(field, None)
                 try:
                     logSNR = log10(float(asteroid['snr']))
-                    data['logSNR'] = "%6.4f" % logSNR
+                    data['logSNR'] = "%5.3f" % logSNR
                 except ValueError:
                     data['logSNR'] = '    '
                 try:
@@ -654,10 +654,10 @@ def parse_and_modify_data(line, ast_catalog=None, asteroids=None, rms_available=
                 except ValueError:
                     data['photAp'] = '    '
                 if asteroid['fwhm'] != '0.0':
-                    data['seeing'] = "%6.4f" % (float(asteroid['fwhm']))
+                    data['seeing'] = "%5.3f" % (float(asteroid['fwhm']))
                 else:
                     # Substitute average seeing
-                    data['seeing'] = "%6.4f" % (float(seeing))
+                    data['seeing'] = "%5.3f" % (float(seeing))
         # Re-round magnitude
         try:
             mag = float(data['mag'])
